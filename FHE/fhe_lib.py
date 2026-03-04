@@ -7,8 +7,8 @@ n = 2 ** r      # 2^(16-1)
 k = int()       # roll key 
 
 # representation of cipertexts ct=Enc(z*)
-a = np.empty(n/2, dtype=np.complex)
-b = np.empty(n/2, dtype=np.complex)
+a = np.empty(n // 2 , dtype=complex)
+b = np.empty(n // 2, dtype=complex)
 
 """ # 4 moves
         a+b                   # addition

@@ -33,9 +33,13 @@ def function_name(user_ct):
 ```
 
 "function_name" is the name of your function. Be descriptive of what you're trying to achieve! 
+
 "user_ct" is the ciphertext provided by the user, or you when you call the function elsewhere.
+
 "local_ct" is a new ciphertext to be used within the function. In this case, local_ct is a copy of user_ct.
+
 "\#" marks the start of a comment (code that won't get executed).
+
 "return" ends the function and returns what follows to where the function was called. 
 
 If developing a function within a separate .py file, include the following line at the top of the file to use the functions within fhe_lib: 

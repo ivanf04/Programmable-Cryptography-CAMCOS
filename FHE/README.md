@@ -11,8 +11,8 @@ Note: for the remainder of this document, "ciphertext" may be abbreviated as "ct
 These are the four core functions that we assume work within our system. 
 
 ```python
-ctc = cta + ctb      # element-wise addition
-ctab = cta * ctb     # element-wise multiplication
+cts = cta + ctb      # element-wise addition
+ctm = cta * ctb      # element-wise multiplication
 np.roll(ct,k)        # shift the elements in ct by k indeces with wraparound
 np.conjugate(ct)     # complex conjugation of each element in ct
 ```

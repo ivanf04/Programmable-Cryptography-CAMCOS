@@ -7,8 +7,8 @@ n = 2 ** r      # 2^(16-1)
 k = int()       # roll key 
 
 # representation of cipertexts ct=Enc(z*)
-a = np.empty(n // 2 , dtype=complex)
-b = np.empty(n // 2, dtype=complex)
+a = np.empty(n , dtype=complex)
+b = np.empty(n , dtype=complex)
 
 """ # 4 moves
         a+b                   # addition
@@ -26,13 +26,18 @@ b = np.empty(n // 2, dtype=complex)
 
 # sum ct naive O(n)
 def sum_naive(ct):
-    sumct = np.copyto(sumct, ct)
-    for i in range(n-1):
-        sumct = sumct + np.roll(ct, 1)
-    return sumct
+    result_ct = np.empty(ct.size , dtype=complex)
+    roller_ct = np.empty(ct.size , dtype=complex)
+    np.copyto(result_ct, ct)
+    np.copyto(roller_ct, ct)
+    for i in range(ct.size - 1):
+        roller_ct = np.roll(roller_ct, 1)
+        result_ct = result_ct + roller_ct
+    return result_ct
 
 # sum ct O(lg(n))
 def sum(ct):
+    ctcp = np.empty(ct.size, dtype=complex)
     np.copyto(ctcp, ct)
     i = 0
     while i < (r-1): # TODO make sure this range is actually correct

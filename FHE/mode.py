@@ -1,7 +1,8 @@
 #basic sandbox for mode in FHE
 import random
 
-#sign function 
+# sign function; high level abstraction 
+# this is illegal, we get approximations with sigmoid 
 def sign(x: int) -> int:
     if(x <= 0):
         return 0

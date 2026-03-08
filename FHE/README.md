@@ -51,7 +51,7 @@ import fhe_lib as fhel
 To use a function from fhe_lib in a separate .py file, call it like so:
 
 ```python
-fhel.sum(cta, ctb)
+ct_to_modify = fhel.dotpr(cta, ctb)
 ```
 
 ## License 

@@ -1,14 +1,16 @@
 #basic sandbox for mode in FHE
 import random
 
-#sign function 
+# sign function; high level abstraction 
+# this is illegal, we get approximations with sigmoid 
 def sign(x: int) -> int:
     if(x <= 0):
         return 0
     return 1
 
-#function to determine if two values are equal 
-def is_equal(x: int, y: int) -> bool: 
+# function to determine if two values are equal 
+# TODO: instead of == do a tolerance check 
+def approx_equals(x: int, y: int) -> bool: 
     if (sign(x - y) == 0 and sign(y-x) == 0):
         return True
     return False

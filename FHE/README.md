@@ -6,7 +6,7 @@ These scripts are written in Python and heavily reliant on the numpy library. Yo
 
 Note: for the remainder of this document, "ciphertext" may be abbreviated as "ct"
 
-## The Primitive Moves 
+## The Base Moves 
 
 These are the four core functions that we assume work within our system. 
 

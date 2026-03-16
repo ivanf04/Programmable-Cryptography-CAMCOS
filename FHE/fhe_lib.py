@@ -29,6 +29,13 @@ ct2n = np.full(2/n) # ct containing multiplicative inverse of size (allows divis
 
 # region concrete implementations
 
+''' convert ct to reals only from complex 
+    conjugation returns 2*(real), so divide that by half
+    concrete FHE equivalent to np.real(ct)
+'''
+def realify(ct):
+    return np.conjugate(ct) * np.array(ptct, 0.5)
+
 ''' intra-sum naive O(n)
     returns ct with every element containing sum 
 '''
@@ -64,6 +71,11 @@ def complex_ip(ct):
 # mean
 def mean(ct):
     return sum(ct) * ct2n   # returns ct with every element containing mean
+
+# sign
+def sign(ct):
+    # TODO 
+    return
 
 # endregion
 

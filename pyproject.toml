@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fhelib"
+version = "0.1"
+readme = "README.md"
+dependencies = [
+    "numpy==2.4.3",
+    "openfhe==1.5.0.0.24.4",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,5 +1,9 @@
-# libraries
 import numpy as np
+
+"""
+This file is being depricated, TODO: move  and implement the remainig methods 
+in thier corresponding directories 
+"""
 
 
 """ # 4 moves
@@ -16,28 +20,6 @@ import numpy as np
 
 # region concrete implementations
 
-# sum ct naive O(n)
-def sum_naive(ct):
-    result_ct = np.empty(ct.size , dtype=complex)
-    roller_ct = np.empty(ct.size , dtype=complex)
-    np.copyto(result_ct, ct)
-    np.copyto(roller_ct, ct)
-    for i in range(ct.size - 1):
-        roller_ct = np.roll(roller_ct, 1)
-        result_ct = result_ct + roller_ct
-    return result_ct
-
-# sum ct O(lg(n))
-def sum(ct):
-    #TODO I hard coded r = 15, we need to dynamically implement r
-    r = 15
-    ctcp = np.empty(ct.size, dtype=complex)
-    np.copyto(ctcp, ct)
-    i = 0
-    while i < (r-1): # TODO make sure this range is actually correct
-        ctcp = ctcp + np.roll(ct, 2 ** i)
-        i *= 2
-    return ctcp
 
 # dot product
 def dotpr(cta, ctb):
@@ -62,17 +44,6 @@ def complex_ip(ct):
 
                             # approximate with polynomials | taylor series
 """
-
-#function to cycle a list, start at the end of the list and shift values 
-def cycle(step: int, ct: list):
-    copy = ct
-    last_index = len(ct) - 1
-    for j in range(step):
-        temp = copy[last_index]
-        for i in range(len(ct)):
-            copy[last_index - i] = copy[last_index  - i - 1]
-        copy[0] = temp
-    return copy
 
 
 # sign only reals

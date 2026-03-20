@@ -1,39 +1,6 @@
 # libraries
 import numpy as np
 
-# default ciphertext size n = N/2 (as noted in PiFHE hackmd)
-r = 15          # 16-1
-n = 2 ** r      # 2^(16-1)
-k = int()       # roll key 
-
-# representation of cipertexts ct=Enc(z*)
-a = np.empty(n , dtype=complex)
-b = np.empty(n , dtype=complex)
-
-#Cypher text class 
-class Cypher_Text:
-
-    # default ciphertext size n = N/2 (as noted in PiFHE hackmd)
-    r = 15          # 16-1
-    n = 2 ** r      # 2^(16-1)
-    
-    def __init__(self, length=n):
-        """
-        This initializes the ct to have a default length of N / 2 and elements equal to 0 (???)
-        TODO: find out how to intitialize all elements to zero 
-        """
-        self.ct = np.zeros(length, dtype=complex) 
-    
-    #only use this for testing 
-    def set_element(self, index, value):
-        self.ct[index] = value
-    
-    def get_element(self, index):
-        return self.ct[index]
-    
-    def __str__(self):
-        return str(self.ct)
-    
 
 """ # 4 moves
         a+b                   # addition
@@ -62,6 +29,8 @@ def sum_naive(ct):
 
 # sum ct O(lg(n))
 def sum(ct):
+    #TODO I hard coded r = 15, we need to dynamically implement r
+    r = 15
     ctcp = np.empty(ct.size, dtype=complex)
     np.copyto(ctcp, ct)
     i = 0
@@ -94,12 +63,25 @@ def complex_ip(ct):
                             # approximate with polynomials | taylor series
 """
 
+#function to cycle a list, start at the end of the list and shift values 
+def cycle(step: int, ct: list):
+    copy = ct
+    last_index = len(ct) - 1
+    for j in range(step):
+        temp = copy[last_index]
+        for i in range(len(ct)):
+            copy[last_index - i] = copy[last_index  - i - 1]
+        copy[0] = temp
+    return copy
+
+
 # sign only reals
 def sign_asmpt(ct):
     return np.sign(np.real(ct))
 
 # sign as described in hackmd
 def sign_asmpt_hmd(ct):
+    n = ct.size()
     real = np.real(ct)
     sign = np.zeroes(n, dtype=np.complex)
     for i in range(n):

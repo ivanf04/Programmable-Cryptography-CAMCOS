@@ -3,37 +3,14 @@ import numpy as np
 
 # default ciphertext size n = N/2 (as noted in PiFHE hackmd)
 r = 15          # 16-1
-n = 2 ** r      # 2^(16-1)
+n = 2 ** r      # 2^(r)
 k = int()       # roll key 
 
 # representation of cipertexts ct=Enc(z*)
-a = np.empty(n , dtype=complex)
-b = np.empty(n , dtype=complex)
-
-#Cypher text class 
-class Cypher_Text:
-
-    # default ciphertext size n = N/2 (as noted in PiFHE hackmd)
-    r = 15          # 16-1
-    n = 2 ** r      # 2^(16-1)
-    
-    def __init__(self, length=n):
-        """
-        This initializes the ct to have a default length of N / 2 and elements equal to 0 (???)
-        TODO: find out how to intitialize all elements to zero 
-        """
-        self.ct = np.zeros(length, dtype=complex) 
-    
-    #only use this for testing 
-    def set_element(self, index, value):
-        self.ct[index] = value
-    
-    def get_element(self, index):
-        return self.ct[index]
-    
-    def __str__(self):
-        return str(self.ct)
-    
+ptct = np.empty(n, dtype=complex) # prototype ciphertext 
+a = np.array(ptct)
+b = np.array(ptct)
+ct2n = np.full(2/n) # ct containing multiplicative inverse of size (allows division by number of elements)
 
 """ # 4 moves
         a+b                   # addition
@@ -42,49 +19,70 @@ class Cypher_Text:
         np.conjugate(a)       # complex conjugation
 
     # implied moves
-        np.copyto(a,b)                          # copy a to b (both contain a copy of what was in b)
+        q = np.array(ptct)                      # create a new empty ct named q 
+        b = np.array(a)                         # creates a new ct b as a copy of a
+        b = np.copy(a)                          # copy a into b, assumes b has been declared
         ct0 = np.zeroes(n, dtype=np.complex)    # ct containing zeroes
         ct1 = np.ones(n, dtype=np.complex)      # ct containing ones
+        ct2n = np.full(2/n)                     # ct containing mutliplicative inverse of size
 """
 
 # region concrete implementations
 
-# sum ct naive O(n)
+''' convert ct to reals only from complex 
+    conjugation returns 2*(real), so divide that by half
+    concrete FHE equivalent to np.real(ct)
+'''
+def realify(ct):
+    return np.conjugate(ct) * np.array(ptct, 0.5)
+
+''' intra-sum naive O(n)
+    returns ct with every element containing sum 
+'''
 def sum_naive(ct):
-    result_ct = np.empty(ct.size , dtype=complex)
-    roller_ct = np.empty(ct.size , dtype=complex)
-    np.copyto(result_ct, ct)
-    np.copyto(roller_ct, ct)
-    for i in range(ct.size - 1):
-        roller_ct = np.roll(roller_ct, 1)
-        result_ct = result_ct + roller_ct
-    return result_ct
+    ct_sum = np.array(ct)
+    for i in range(n-1):
+        ct_sum += np.roll(ct, 1)
+    return ct_sum
 
-# sum ct O(lg(n))
+''' intra-sum O(lg(n))
+    returns ct with every element containing sum 
+'''
 def sum(ct):
-    ctcp = np.empty(ct.size, dtype=complex)
-    np.copyto(ctcp, ct)
+    ct_sum = np.copy(ct)
     i = 0
-    while i < (r-1): # TODO make sure this range is actually correct
-        ctcp = ctcp + np.roll(ct, 2 ** i)
+    while i < (r): # TODO make sure this range is actually correct
+        ct_sum += np.roll(ct, i)
         i *= 2
-    return ctcp
+    return ct_sum
 
-# dot product
+''' dot product
+    returns ct with every element containing 
+    the dot product of a and b
+'''
 def dotpr(cta, ctb):
-    dpct = cta * ctb
-    return sum(dpct)
+    return sum(cta * ctb) 
 
 # complex inner product
 def complex_ip(ct):
     # TODO implement comp ip
     return
 
+# mean
+def mean(ct):
+    return sum(ct) * ct2n   # returns ct with every element containing mean
+
+# sign
+def sign(ct):
+    # TODO 
+    return
+
 # endregion
 
-# region functions we assume work    
+# region functions we assume work 
 """ but have not been implemented 
     as a sequence of the four moves
+    (technically illegal)
 
     np.real(ct)             # return array containing only real component of each z in ct
     np.imag(ct)             # "                            imaginary "
@@ -114,11 +112,6 @@ def cmp_asmpt(ct):
 
 def mod_asmpt(ct):
     #TODO implement mod
-    return
-
-def mean_asmpt(ct):
-    #TODO validate how mean is returned
-    #TODO implement mean
     return
 
 # endregion

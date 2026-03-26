@@ -1,7 +1,7 @@
 import numpy as np
 
 #Cypher text class 
-class Cipertext:
+class Ciphertext:
 
     # default ciphertext size n = N/2 (as noted in PiFHE hackmd)
     r = 15          # 16-1

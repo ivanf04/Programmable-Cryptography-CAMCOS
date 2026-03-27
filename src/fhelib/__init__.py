@@ -1,3 +1,3 @@
-from .ciphertext import Cipertext
+from .ciphertext import Ciphertext
 
 __all__ = ["Ciphertext"]

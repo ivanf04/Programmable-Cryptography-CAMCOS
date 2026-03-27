@@ -1,5 +1,5 @@
 import numpy as np
-from ciphertext import Ciphertext
+from fhelib.ciphertext import Ciphertext
 """
 Basic component wise multiplication of two cypher texts
 using np.multiply

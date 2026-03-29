@@ -45,31 +45,6 @@ def realify(ct):
     return np.conjugate(ct) * np.array(ptct, 0.5)
 
 
-""" intra-sum naive O(n)
-    returns ct with every element containing sum 
-"""
-
-
-def sum_naive(ct):
-    ct_sum = np.array(ct)
-    for i in range(n - 1):
-        ct_sum += np.roll(ct, 1)
-    return ct_sum
-
-
-""" intra-sum O(lg(n))
-    returns ct with every element containing sum 
-"""
-
-
-def sum(ct):
-    ct_sum = np.copy(ct)
-    i = 0
-    while i < (r):  # TODO make sure this range is actually correct
-        ct_sum += np.roll(ct, i)
-        i *= 2
-    return ct_sum
-
 
 """ dot product
     returns ct with every element containing 
@@ -90,12 +65,6 @@ def complex_ip(ct):
 # mean
 def mean(ct):
     return sum(ct) * ct2n  # returns ct with every element containing mean
-
-
-# sign
-def sign(ct):
-    # TODO
-    return
 
 
 # endregion

@@ -1,5 +1,5 @@
 import numpy as np
-from fhelib.algorithms.difference import difference
+from fhelib.auxiliary.difference import difference
 from fhelib import Ciphertext
 
 """

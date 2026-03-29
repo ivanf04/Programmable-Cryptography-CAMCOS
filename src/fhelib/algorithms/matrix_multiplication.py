@@ -36,7 +36,7 @@ def matrix_multiply_n2_vector_2x2(A_prime: Ciphertext, B_prime: Ciphertext, n: i
     B_prime: flattened columns of B as a single Ciphertext
     returns: flattened result matrix C = A*B as a Ciphertext
     """
-    B_double_prime = cycle(n, B_prime.copy())
+    B_double_prime = cycle(B_prime.copy(), -n)  # ct first, k second
     X = make_mask(n)
 
     C_x = intravector_partsum(np.multiply(A_prime, B_prime), n)

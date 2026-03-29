@@ -1,13 +1,12 @@
 """"
-Implemetation of cycle    
+Implemetation of cycle using np.roll
+
+if(k>0) elements move right
+if(k<0) elements move left
+
+See documentation for examples:
+https://numpy.org/doc/stable/reference/generated/numpy.roll.html
 """
 
-def cycle(step: int, ct: list):
-    copy = ct
-    last_index = len(ct) - 1
-    for j in range(step):
-        temp = copy[last_index]
-        for i in range(len(ct)):
-            copy[last_index - i] = copy[last_index  - i - 1]
-        copy[0] = temp
-    return copy
+def cycle(ct: Ciphertext, k: int):
+    return np.roll(ct, k)

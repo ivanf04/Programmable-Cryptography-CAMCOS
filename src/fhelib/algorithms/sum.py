@@ -23,7 +23,7 @@ def intravector_sum(ct: np.ndarray) -> np.ndarray:
     
     i = 0
     while i < (r - 1):
-        ct_copy = ct_copy + np.roll(ct_copy, 2 ** i)  # cycle by power of 2 and add
-        i = 2 * i + 1  # 0 -> 1 -> 3 -> 7 ... gives steps 1, 2, 4, 8
+        ct_copy = ct_copy + np.roll(ct_copy, -(2 ** i))
+        i = 2 * i + 1
     
     return ct_copy[0]

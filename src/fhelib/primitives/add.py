@@ -2,8 +2,8 @@ import numpy as np
 from fhelib.ciphertext import Ciphertext
 """
 Basic component wise addition of two cypher texts
-using np.multiply
+using np.add
 """
 
-def multiply(a: Ciphertext, b: Ciphertext):
+def add(a: Ciphertext, b: Ciphertext):
     return np.add(a,b)

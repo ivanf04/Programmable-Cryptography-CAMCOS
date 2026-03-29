@@ -1,12 +1,10 @@
 from fhelib.ciphertext import Ciphertext
 """
-Creates a copy of the given cyphertext and takes the complex
-conjugate of each element. 
-Returns the conjugated copy
+Implementation of complex conjugation
+
+for each element in ct x+yj, 
+returned ciphertext contains x-yj
 """
+
 def conjugate(a: Ciphertext):
-    b = a.copy()
-    for i, element in enumerate(b):
-      b[i] = element.conjugate()
-    return b
-     
+    return np.conjugate(a)

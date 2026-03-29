@@ -1,16 +1,22 @@
-# libraries
 import numpy as np
 
+"""
+This file is being deprecated, TODO: move / implement the remaining methods 
+in their corresponding directories 
+"""
+
 # default ciphertext size n = N/2 (as noted in PiFHE hackmd)
-r = 15          # 16-1
-n = 2 ** r      # 2^(r)
-k = int()       # roll key 
+r = 15  # 16-1
+n = 2**r  # 2^(r)
+k = int()  # roll key
 
 # representation of cipertexts ct=Enc(z*)
-ptct = np.empty(n, dtype=complex) # prototype ciphertext 
+ptct = np.empty(n, dtype=complex)  # prototype ciphertext
 a = np.array(ptct)
 b = np.array(ptct)
-ct2n = np.full(2/n) # ct containing multiplicative inverse of size (allows division by number of elements)
+ct2n = np.full(
+    2 / n
+)  # ct containing multiplicative inverse of size (allows division by number of elements)
 
 """ # 4 moves
         a+b                   # addition
@@ -29,57 +35,72 @@ ct2n = np.full(2/n) # ct containing multiplicative inverse of size (allows divis
 
 # region concrete implementations
 
-''' convert ct to reals only from complex 
+""" convert ct to reals only from complex 
     conjugation returns 2*(real), so divide that by half
     concrete FHE equivalent to np.real(ct)
-'''
+"""
+
+
 def realify(ct):
     return np.conjugate(ct) * np.array(ptct, 0.5)
 
-''' intra-sum naive O(n)
+
+""" intra-sum naive O(n)
     returns ct with every element containing sum 
-'''
+"""
+
+
 def sum_naive(ct):
     ct_sum = np.array(ct)
-    for i in range(n-1):
+    for i in range(n - 1):
         ct_sum += np.roll(ct, 1)
     return ct_sum
 
-''' intra-sum O(lg(n))
+
+""" intra-sum O(lg(n))
     returns ct with every element containing sum 
-'''
+"""
+
+
 def sum(ct):
     ct_sum = np.copy(ct)
     i = 0
-    while i < (r): # TODO make sure this range is actually correct
+    while i < (r):  # TODO make sure this range is actually correct
         ct_sum += np.roll(ct, i)
         i *= 2
     return ct_sum
 
-''' dot product
+
+""" dot product
     returns ct with every element containing 
     the dot product of a and b
-'''
+"""
+
+
 def dotpr(cta, ctb):
-    return sum(cta * ctb) 
+    return sum(cta * ctb)
+
 
 # complex inner product
 def complex_ip(ct):
     # TODO implement comp ip
     return
 
+
 # mean
 def mean(ct):
-    return sum(ct) * ct2n   # returns ct with every element containing mean
+    return sum(ct) * ct2n  # returns ct with every element containing mean
+
 
 # sign
 def sign(ct):
-    # TODO 
+    # TODO
     return
+
 
 # endregion
 
-# region functions we assume work 
+# region functions we assume work
 """ but have not been implemented 
     as a sequence of the four moves
     (technically illegal)
@@ -92,26 +113,32 @@ def sign(ct):
                             # approximate with polynomials | taylor series
 """
 
+
 # sign only reals
 def sign_asmpt(ct):
     return np.sign(np.real(ct))
 
+
 # sign as described in hackmd
 def sign_asmpt_hmd(ct):
+    n = ct.size()
     real = np.real(ct)
     sign = np.zeroes(n, dtype=np.complex)
     for i in range(n):
-        if (ct[i] > 0):
+        if ct[i] > 0:
             sign[i] = 1
     return sign
 
+
 # compare
 def cmp_asmpt(ct):
-    #TODO implement compare
+    # TODO implement compare
     return
 
+
 def mod_asmpt(ct):
-    #TODO implement mod
+    # TODO implement mod
     return
+
 
 # endregion

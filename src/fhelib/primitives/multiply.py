@@ -6,5 +6,4 @@ using np.multiply
 """
 
 def multiply(a: Ciphertext, b: Ciphertext):
-    return np.multiply(a,b); 
-    
+    return np.multiply(a,b)

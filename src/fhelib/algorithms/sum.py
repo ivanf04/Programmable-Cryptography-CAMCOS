@@ -27,3 +27,19 @@ def intravector_sum(ct: np.ndarray) -> np.ndarray:
         i = 2 * i + 1
     
     return ct_copy[0]
+
+def intravector_partsum(ct: np.ndarray, n: int) -> np.ndarray:
+    ct_copy = np.empty(ct.size, dtype=complex)
+    np.copyto(ct_copy, ct)
+    
+    num_blocks = ct.size // n
+    for b in range(num_blocks):
+        block = ct[b*n:(b+1)*n].copy()
+        # sum within this block
+        i = 0
+        while i < (n - 1):
+            block = block + np.roll(block, -(2**i))
+            i = 2 * i + 1
+        ct_copy[b*n:(b+1)*n] = block
+    
+    return ct_copy

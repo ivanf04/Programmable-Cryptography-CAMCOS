@@ -1,7 +1,7 @@
 from fhelib import Ciphertext
-from fhelib.algorithms.product import dot_product
+from fhelib.lowlevel.product import dot_product
 from fhelib.primitives.cycle import cycle
-from fhelib.algorithms.sum import intravector_partsum
+from fhelib.lowlevel.sum import intravector_partsum
 import numpy as np
 
 

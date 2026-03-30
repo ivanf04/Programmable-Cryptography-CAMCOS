@@ -1,5 +1,5 @@
 from fhelib import Ciphertext
-from fhelib.algorithms.sum import intravector_sum
+from fhelib.lowlevel.sum import intravector_sum
 from fhelib.primitives.conjugate import conjugate
 import numpy as np
 

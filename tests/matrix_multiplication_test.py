@@ -1,5 +1,5 @@
 from fhelib.ciphertext import Ciphertext
-from fhelib.algorithms.matrix_multiplication import nxn_matrix_multiply_n_vectors, matrix_multiply_n2_vector_2x2
+from fhelib.lowlevel.matrix_multiplication import nxn_matrix_multiply_n_vectors, matrix_multiply_n2_vector_2x2
 
 # Test matrices:
 # A = [[1,2],[3,4]]

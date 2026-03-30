@@ -20,7 +20,7 @@ class Ciphertext(np.ndarray):
         TODO: find out how to intitialize all elements to zero 
         """
         if not self._is_power_of_2(length):
-            raise ValueError("Length must be a power of two, got {length}")
+            raise ValueError(f"Length must be a power of two, got {length}")
              
         self.ct = np.zeros(length, dtype=complex) 
     

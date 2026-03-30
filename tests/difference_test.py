@@ -7,15 +7,15 @@ Testing of difference.py
 """
 
 n = 2 ** 15
-a = Ciphertext(n)
-b = Ciphertext(n)
+odds = Ciphertext(n)
+evens = Ciphertext(n)
 
 for i in range(n):
-    a.set_element(i, i * 2 + 1)
-    b.set_element(i, i * 2)
+    odds.set_element(i, i * 2 + 1)
+    evens.set_element(i, i * 2)
 
-print(a, "\n", b)
+print(odds, "\n", evens)
 
-d = difference(a,b)
+d = difference(odds,evens)
 
 print(d)

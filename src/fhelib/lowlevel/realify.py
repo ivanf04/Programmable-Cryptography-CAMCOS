@@ -1,4 +1,5 @@
 from fhelib import Ciphertext
+import numpy as np
 #import numpy as np #unclear if needed
 
 """ convert ct to reals only from complex 
@@ -7,6 +8,6 @@ from fhelib import Ciphertext
     concrete FHE equivalent to np.real(ct)
 """
 def realify(ct:Ciphertext):
-    return (ct + np.conjugate(ct)) * np.array(ptct, 0.5)
+    return (ct + np.conjugate(ct)) * 0.5
 
 # TODO by Dwyer: validate how we intend to call function using wrapper

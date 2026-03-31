@@ -3,19 +3,8 @@ from fhelib.lowlevel.realify import realify
 from fhelib import Ciphertext
 """
 Returns 0 if x_i is <= 0 or 1 if x_i > 0
-TODO: use a sigmoid approximation for the output  
 TODO: refactor with 'good_if'
 """
-
-# def sign(a: Ciphertext) -> Ciphertext:
-#     s = Ciphertext(a.size)
-#     for i in range(a.size):
-#         if(a[i] <= 0):
-#             s[i] = 0
-#         else:
-#             s[i] = 1
-#     return s
-
 
 """
 sigmoid based approximation for the sign function 
@@ -33,12 +22,15 @@ sigmoid based approximation for the sign function
         Output with 1's and 0's 
 """
 def sign(x: Ciphertext, k=10.0, power=8, tol=1e-6) -> Ciphertext:
-    x = realify(x)
+    x = realify(x)  
     s = 1.0 / (1.0 + np.exp(-k * x))
     y = s ** power
-    y[y <= tol] = 0.0
+
+    # normalize values to 1 and zero based on tolerance
+    y[y <= tol] = 0.0   
     y[y >= 1.0 - tol] = 1.0
 
+    # clean up the data, set equal length CT to all 0 and 1 in corresponding elements of y 
     out = np.zeros_like(y)
     out[y > 0.5] = 1.0
     return out

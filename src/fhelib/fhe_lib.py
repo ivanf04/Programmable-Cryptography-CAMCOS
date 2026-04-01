@@ -35,17 +35,6 @@ ct2n = np.full(
 
 # region concrete implementations
 
-""" convert ct to reals only from complex 
-    conjugation returns 2*(real), so divide that by half
-    concrete FHE equivalent to np.real(ct)
-"""
-
-
-def realify(ct):
-    return np.conjugate(ct) * np.array(ptct, 0.5)
-
-
-
 """ dot product
     returns ct with every element containing 
     the dot product of a and b
@@ -86,23 +75,6 @@ def mean(ct):
 # sign only reals
 def sign_asmpt(ct):
     return np.sign(np.real(ct))
-
-
-# sign as described in hackmd
-def sign_asmpt_hmd(ct):
-    n = ct.size()
-    real = np.real(ct)
-    sign = np.zeroes(n, dtype=np.complex)
-    for i in range(n):
-        if ct[i] > 0:
-            sign[i] = 1
-    return sign
-
-
-# compare
-def cmp_asmpt(ct):
-    # TODO implement compare
-    return
 
 
 def mod_asmpt(ct):

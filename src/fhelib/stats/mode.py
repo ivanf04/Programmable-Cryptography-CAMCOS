@@ -13,13 +13,13 @@ def mode(x: Ciphertext):
     # create differnce matrix
     d = difference_matrix(x)
     # print(f"difference matrix:\n{d}")
-    equailt_matrix = np.empty(shape=d.shape)
+    equailty_matrix = np.empty(shape=d.shape)
     for i in range(d.shape[0]):
-        equailt_matrix[i] = fhe_equality(d[i], 0.0)
+        equailty_matrix[i] = fhe_equality(d[i], 0.0)
     # print(f"equality matrix:\n{equailt_matrix}")
     sums = np.zeros(d.shape[1])
     for i in range(d.shape[0]):
-        row = equailt_matrix[i]
+        row = equailty_matrix[i]
         # print(f"row_{i}: {row}")
         sums[i] = intravector_sum(row)
     # print(f"sums:\n{sums}")

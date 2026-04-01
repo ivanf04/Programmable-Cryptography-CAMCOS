@@ -1,4 +1,4 @@
-from fhelib.lowlevel.product import *
+from fhelib.lowlevel.dot_product import *
 from fhelib.ciphertext import Ciphertext
 
 

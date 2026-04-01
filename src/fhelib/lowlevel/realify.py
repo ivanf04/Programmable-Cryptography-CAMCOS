@@ -1,6 +1,6 @@
 from fhelib import Ciphertext
 import numpy as np
-#import numpy as np #unclear if needed
+
 
 """ convert ct to reals only from complex 
     adding a complex number and its conjugate returns 2*(real),

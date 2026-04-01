@@ -10,6 +10,5 @@ def difference_matrix(a: Ciphertext) -> np.matrix:
     for i in range(a.size): 
         a_copy = np.full(a.shape, a[i])
         temp_row = difference(a, a_copy)
-        print(i, a_copy, temp_row)
         d = np.vstack((d, temp_row))
     return d

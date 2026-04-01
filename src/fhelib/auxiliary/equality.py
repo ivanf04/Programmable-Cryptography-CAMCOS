@@ -9,6 +9,7 @@ def fhe_equality(ct: Ciphertext, a: float, epsilon: float = 0.01) -> Ciphertext:
     Returns a 0-1 vector where 1 means the element is within epsilon of a.
     Uses sigmoid-based sign approximation.
     """
-    lower = sign(ct - (a - epsilon))   # x >= a - epsilon
-    upper = sign((a + epsilon) - ct)   # x <= a + epsilon
+    k = 100.0 / epsilon  # scale k to epsilon size
+    lower = sign(ct - (a - epsilon), k=k)   # x >= a - epsilon
+    upper = sign((a + epsilon) - ct, k=k)   # x <= a + epsilon
     return multiply(lower, upper)

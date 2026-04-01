@@ -33,7 +33,7 @@ def sign(x: Ciphertext, k=10.0, power=8, tol=1e-6) -> Ciphertext:
 Sign function as described in the "Spring 2026" hackmd
 """
 def sign_half_equality(x: Ciphertext, k=10.0, tol=0.25) -> Ciphertext:
-    print(f"intial CT:\n{x}")
+    # print(f"intial CT:\n{x}")
     s = 1.0 / (1.0 + np.exp(-k * x))
 
     # normalize values to 1, 1.5 and zero based on tolerance

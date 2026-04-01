@@ -22,7 +22,24 @@ sigmoid based approximation for the sign function
     out: Ciphertext
         Output with 1's and 0's 
 """
-def sign(x: Ciphertext, k=10.0, tol=0.25) -> Ciphertext:
+def sign(x: Ciphertext, k=10.0, power=8, tol=1e-6) -> Ciphertext:
+    x = realify(x)  
+    s = 1.0 / (1.0 + np.exp(-k * x))
+    y = s ** power
+
+    # normalize values to 1 and zero based on tolerance
+    y[y <= tol] = 0.0   
+    y[y >= 1.0 - tol] = 1.0
+
+    # clean up the data, set equal length CT to all 0 and 1 in corresponding elements of y 
+    out = np.zeros_like(y)
+    out[y > 0.5] = 1.0
+    return out
+
+"""
+Sign function as described in the "Spring 2026" hackmd
+"""
+def sign_half_equality(x: Ciphertext, k=10.0, tol=0.25) -> Ciphertext:
     # x = realify(x)  
     print(f"intial CT:\n{x}")
     s = 1.0 / (1.0 + np.exp(-k * x))

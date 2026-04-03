@@ -1,6 +1,8 @@
+# surely there's a better way to do imports??
 from fhelib import Ciphertext
-import numpy as np
-
+from fhelib.basic.add       import add
+from fhelib.basic.multiply  import multiply
+from fhelib.basic.conjugate import conjugate
 
 """ convert ct to reals only from complex 
     adding a complex number and its conjugate returns 2*(real),
@@ -8,6 +10,7 @@ import numpy as np
     concrete FHE equivalent to np.real(ct)
 """
 def realify(ct:Ciphertext):
-    return (ct + np.conjugate(ct)) * 0.5
-
-# TODO by Dwyer: validate how we intend to call function using wrapper
+    ct_halve = Ciphertext(len(ct), 0.5+0j) # TODO modify ct constr. 
+    ct_result = add(ct, conjugate(ct))
+    ct_result = multiply(ct_result, ct_halve)
+    return ct_result

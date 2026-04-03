@@ -1,5 +1,5 @@
 from fhelib.ciphertext import Ciphertext
-from fhelib.primitives.multiply import multiply
+from fhelib.basic.multiply import multiply
 
 a = Ciphertext(8)
 b = Ciphertext(8)

@@ -6,9 +6,9 @@ rng = np.random.default_rng()
 class Ciphertext(np.ndarray):
 
     def __new__(cls, length):        # __new__ instead of __init__ (ndarray requires this)
-        obj = np.zeros(length, dtype=complex).view(cls)  # create array, cast to Ciphertext type
-        #obj = np.random.random(length) + np.random.random(length) * 1j # generate array of complex numbers
-        #obj = obj.view(cls) # cast array to Ciphertext type
+        #obj = np.zeros(length, dtype=complex).view(cls)  # create array, cast to Ciphertext type
+        obj = np.random.random(length) + np.random.random(length) * 1j # generate array of complex numbers
+        obj = obj.view(cls) # cast array to Ciphertext type
         return obj                   # return it directly
 
     # default ciphertext size n = N/2 (as noted in PiFHE hackmd)

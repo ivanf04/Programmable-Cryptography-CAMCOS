@@ -1,6 +1,6 @@
 from fhelib import Ciphertext
 from fhelib.lowlevel.dot_product import dot_product
-from fhelib.primitives.cycle import cycle
+from fhelib.basic.cycle import cycle
 from fhelib.lowlevel.sum import intravector_partsum
 import numpy as np
 

@@ -1,6 +1,6 @@
 from fhelib import Ciphertext
 from fhelib.lowlevel.sum import intravector_sum
-from fhelib.primitives.conjugate import conjugate
+from fhelib.basic.conjugate import conjugate
 import numpy as np
 
 def dot_product(ct1: Ciphertext, ct2: Ciphertext):

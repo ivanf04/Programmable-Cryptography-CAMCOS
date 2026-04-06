@@ -1,6 +1,6 @@
 from fhelib import Ciphertext
 from fhelib.lowlevel.sign import sign
-from fhelib.primitives.multiply import multiply
+from fhelib.basic.multiply import multiply
 import numpy as np
 
 def fhe_equality(ct: Ciphertext, a: float, epsilon: float = 0.01) -> Ciphertext:

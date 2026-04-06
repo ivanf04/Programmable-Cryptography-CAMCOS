@@ -15,3 +15,6 @@ https://numpy.org/doc/stable/reference/generated/numpy.roll.html
 """
 def cycle(ct: Ciphertext, k: int):
     return np.roll(ct, k)
+
+def lcycle(ct: Ciphertext, k: int):
+    return np.roll(ct, -k)

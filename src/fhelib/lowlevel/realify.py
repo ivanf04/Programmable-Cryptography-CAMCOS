@@ -10,7 +10,7 @@ from fhelib.basic.conjugate import conjugate
     concrete FHE equivalent to np.real(ct)
 """
 def realify(ct:Ciphertext):
-    ct_halve = Ciphertext(len(ct), 0.5+0j) # TODO modify ct constr. 
+    ct_halve = Ciphertext(len(ct), 0.5+0j)
     ct_result = add(ct, conjugate(ct))
     ct_result = multiply(ct_result, ct_halve)
     return ct_result

@@ -1,4 +1,5 @@
 from fhelib.ciphertext import Ciphertext
+import numpy as np
 """
 Implementation of complex conjugation
 

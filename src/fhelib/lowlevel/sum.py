@@ -1,4 +1,5 @@
 import numpy as np
+from fhelib.primitives.cycle import cycle
 """"
 Implemetation of basic component wise sum    
 """
@@ -10,7 +11,8 @@ def intravector_sum_naive(ct):
     np.copyto(roller_ct, ct)
     
     for i in range(ct.size - 1):
-        roller_ct = np.roll(roller_ct, 1)  # cycle by 1 each time
+        # roller_ct = np.roll(roller_ct, 1)  # cycle by 1 each time
+        roller_ct = cycle(roller_ct, 1)  # cycle by 1 each time
         result_ct = result_ct + roller_ct  # add to accumulator
     
     return result_ct[0]
@@ -23,7 +25,8 @@ def intravector_sum(ct: np.ndarray) -> np.ndarray:
     
     i = 0
     while i < (r - 1):
-        ct_copy = ct_copy + np.roll(ct_copy, -(2 ** i))
+        # ct_copy = ct_copy + np.roll(ct_copy, -(2 ** i))
+        ct_copy = ct_copy + cycle(ct_copy, -(2 ** i))
         i = 2 * i + 1
     
     return ct_copy[0]

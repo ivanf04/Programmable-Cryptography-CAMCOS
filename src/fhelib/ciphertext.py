@@ -1,5 +1,6 @@
 import numpy as np
 
+#TODO: can we make a contructor with a list of data points as a parameter
 #Cypher text class 
 class Ciphertext(np.ndarray):
 
@@ -13,7 +14,6 @@ class Ciphertext(np.ndarray):
         n = 2 ** r      # 2^(16-1)
         self.ct = np.zeros(n, dtype=complex)
 
-    #TODO make the constructor return itself, right now we need to use Ciphertext.ct to acces np funcitons 
     def __init__(self, length, val):
         """
         This initializes the ct to have a default length of N / 2
@@ -39,3 +39,7 @@ class Ciphertext(np.ndarray):
     
     def __str__(self):
         return super().__str__()
+    
+    def negative_ones(self):
+        for i in range(self.size):
+            self.set_element(i, -1)

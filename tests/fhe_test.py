@@ -1,5 +1,6 @@
 from fhelib.ciphertext import Ciphertext
 from fhelib.lowlevel.sum import *
+from fhelib.primitives.add import add
 import numpy as np 
 
 a = Ciphertext(16)
@@ -12,5 +13,5 @@ d = intravector_sum(a)
 
 print(c)
 print(d)
-e = a + b
+e = add(a, b)
 print(e)

@@ -10,7 +10,7 @@ for idx, val in enumerate(values):
 
 print("=" * 50)
 print(f"Mode test on {values}")
-print("Expected output: 2+0j")
+print("Expected output: 2+0")
 print("=" * 50)
 
 result = mode(a)

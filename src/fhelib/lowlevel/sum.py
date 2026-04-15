@@ -1,7 +1,7 @@
 import numpy as np
 from fhelib.primitives.cycle import cycle
 """"
-Implemetation of basic component wise sum    
+Implemetation of intravector sum    
 """
 
 def intravector_sum_naive(ct):

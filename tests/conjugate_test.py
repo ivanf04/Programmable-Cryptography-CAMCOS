@@ -1,5 +1,5 @@
 from fhelib.ciphertext import Ciphertext
-from fhelib.primitives.conjugate import conjugate
+from fhelib.basic.conjugate import conjugate
 
 a = Ciphertext(8)
 

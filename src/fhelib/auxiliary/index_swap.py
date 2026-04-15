@@ -1,6 +1,6 @@
 from fhelib import Ciphertext
-from fhelib.primitives.cycle import cycle
-from fhelib.primitives.multiply import multiply
+from fhelib.basic.cycle import cycle
+from fhelib.basic.multiply import multiply
 import numpy as np
 
 def index_swap(v: Ciphertext, i: int, j: int) -> Ciphertext:

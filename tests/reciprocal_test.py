@@ -1,5 +1,5 @@
 from fhelib.ciphertext import Ciphertext
-from fhelib.auxiliary.division import reciprocal_newton_universal_guess, adaptive_guess
+from fhelib.auxiliary.reciprocal import reciprocal_newton_universal_guess, adaptive_guess
 import numpy as np
 from fhelib.primitives import _counts, reset
 
@@ -29,8 +29,9 @@ for n_iters in [1, 2, 3, 4, 5]:
     got = float(np.real(result[0]))
     error = abs(got - true_val)
     print(f"n={n_iters}: {got:.10f}  error: {error:.2e}")
-print(_counts)
-reset()
+    print(_counts)
+    reset()
+
 
 print()
 print("=" * 50)

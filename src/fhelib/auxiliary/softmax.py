@@ -1,7 +1,7 @@
 from fhelib import Ciphertext
 from fhelib.lowlevel.sum import intravector_sum
 from fhelib.auxiliary.exponentiate import exponentiate
-from fhelib.auxiliary.division import division
+from fhelib.auxiliary.reciprocal import division
 import numpy as np
 
 def softmax(ct: Ciphertext) -> Ciphertext:

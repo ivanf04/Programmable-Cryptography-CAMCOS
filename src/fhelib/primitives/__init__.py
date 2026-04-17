@@ -1,4 +1,12 @@
-_counts = {"add": 0, "multiply": 0, "conjugate": 0, "cycle": 0}
+class _Counts(dict):
+    def __str__(self):
+        lines = ["Operation Counts:"] + [f"  {k}: {v}" for k, v in self.items()]
+        return " ".join(lines)
+
+    def __repr__(self):
+        return self.__str__()
+
+_counts = _Counts({"add": 0, "multiply": 0, "conjugate": 0, "cycle": 0})
 
 def reset(): _counts.update({k: 0 for k in _counts})
 def get_counts(): return dict(_counts)

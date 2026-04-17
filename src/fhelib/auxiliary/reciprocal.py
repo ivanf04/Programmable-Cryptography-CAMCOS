@@ -1,6 +1,7 @@
 import numpy as np
 from fhelib.ciphertext import Ciphertext
 from fhelib.lowlevel.sign import sign_heaviside
+from fhelib.primitives import add, multiply
 
 """
 Out-of-spec implementation of division 
@@ -46,8 +47,8 @@ def reciprocal_partial_sums_geometric(
     power = np.ones_like(x)
 
     for _ in range(1, n + 1):
-        power = power * x  # (z-1)^k
-        res = res + power  # accumulate sum
+        power = multiply(power, x)  # (z-1)^k
+        res = add(res, power)   # accumulate sum
 
     return res
 
@@ -81,6 +82,7 @@ def reciprocal_newton_universal_guess(
     if x0 is None and assumed_range is None:
         raise ValueError("Either x0  or assumed_range required. ")
 
+    # TODO: how do we make this FHE legal? 
     if x0 is None:
         lo, hi = assumed_range
         # geometric mean initial guess
@@ -93,7 +95,11 @@ def reciprocal_newton_universal_guess(
 
     # Newton iterations: x_{n+1} = 2*x_n - x_n^2 * z
     for _ in range(n):
-        x = 2 * x - (x**2) * z
+        x_n = multiply(2, x)    #2*x_n
+        x_2 = multiply(x, x)   #x_n^2
+        x_2_z = multiply(x_2, z)    #x_n^2 * z
+        negative_x_2_z = multiply(-1, x_2_z)    #-(x_n^2 * z)
+        x = add(x_n, negative_x_2_z)    # 2*x_n - x_n^2 * z
 
     return x
 

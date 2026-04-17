@@ -47,6 +47,7 @@ def sign_half_equality(x: Ciphertext, k=10.0, tol=0.25) -> Ciphertext:
 """
 Use the original sign method to create a heaviside-type function
 see "CAMCOS 2026 Spring" hackmd for details 
+TODO: Make FHE legal so we can count primitive operations
 """
 def sign_heaviside(x: Ciphertext, a, b, c, power=10) -> Ciphertext:
     return a + ((b - a) * sign_half_equality(x - c, k=power))

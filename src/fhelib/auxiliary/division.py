@@ -47,6 +47,7 @@ def reciprocal_partial_sums_geometric(
 
     for _ in range(1, n + 1):
         power = power * x  # (z-1)^k
+        power
         res = res + power  # accumulate sum
 
     return res

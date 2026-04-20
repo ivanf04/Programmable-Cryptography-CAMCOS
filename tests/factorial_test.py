@@ -3,7 +3,6 @@ simple test of factorial
 """
 
 from fhelib.lowlevel.factorial import factorial
-import numpy as np
 
 nums = [0, 1, 2, 3, 4, 5, 6, 7]
 expected = [1, 1, 2, 6, 24, 120, 720, 5040]

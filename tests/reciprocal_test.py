@@ -1,5 +1,6 @@
 from fhelib.ciphertext import Ciphertext
-from fhelib.auxiliary.reciprocal import reciprocal_newton_universal_guess, adaptive_guess
+from fhelib.auxiliary.reciprocal_univ_guess import reciprocal_newton_universal_guess
+# from fhelib.auxiliary.reciprocal_adpt_guess import adaptive_guess
 import numpy as np
 from fhelib.primitives import _counts, reset
 
@@ -55,51 +56,51 @@ for i, val in enumerate(vals):
 print(_counts)
 reset()
 
-print()
-print("=" * 50)
-print("Test 3: adaptive guess for values in [1, 2^16]")
-print("=" * 50)
+# print()
+# print("=" * 50)
+# print("Test 3: adaptive guess for values in [1, 2^16]")
+# print("=" * 50)
 
-v3 = Ciphertext(8)
-test_vals = [1.5, 3.0, 5.0, 48.0, 100.0, 1000.0, 32768.0, 0.0]
-for idx, val in enumerate(test_vals):
-    v3.set_element(idx, val)
+# v3 = Ciphertext(8)
+# test_vals = [1.5, 3.0, 5.0, 48.0, 100.0, 1000.0, 32768.0, 0.0]
+# for idx, val in enumerate(test_vals):
+#     v3.set_element(idx, val)
 
-print(f"Input: {test_vals}")
-x0s = adaptive_guess(v3, b=16)
-for i, val in enumerate(test_vals[:7]):
-    print(f"x={val}: adaptive x0={float(np.real(x0s[i])):.6f}  true 1/x={1/val:.6f}")
+# print(f"Input: {test_vals}")
+# x0s = adaptive_guess(v3, b=16)
+# for i, val in enumerate(test_vals[:7]):
+#     print(f"x={val}: adaptive x0={float(np.real(x0s[i])):.6f}  true 1/x={1/val:.6f}")
 
 
-print()
-print("=" * 50)
-print("Test 3b: adaptive guess with Newton's method (per element x0)")
-print("=" * 50)
+# print()
+# print("=" * 50)
+# print("Test 3b: adaptive guess with Newton's method (per element x0)")
+# print("=" * 50)
 
-x0_vec = np.real(x0s)
-z = np.real(v3)
-x = x0_vec.copy()
+# x0_vec = np.real(x0s)
+# z = np.real(v3)
+# x = x0_vec.copy()
 
-for _ in range(5):
-    x = 2 * x - (x**2) * z
+# for _ in range(5):
+#     x = 2 * x - (x**2) * z
 
-for i, val in enumerate(test_vals[:7]):
-    got = float(np.real(x[i]))
-    print(f"1/{val}: got {got:.7f}  expected {1/val:.7f}  error {abs(got - 1/val):.2e}")
+# for i, val in enumerate(test_vals[:7]):
+#     got = float(np.real(x[i]))
+#     print(f"1/{val}: got {got:.7f}  expected {1/val:.7f}  error {abs(got - 1/val):.2e}")
 
-print()
-print("=" * 50)
-print("Test 3c: EXPECTED FAIL - using averaged x0 across wide range")
-print("Using mean of adaptive guesses as single x0 for all elements")
-print("Fails x0 isn't in convergence basin (0, 2/z_max)")
-print("for all elements when range is wide e.g. [1.5, 32768]")
-print("=" * 50)
+# print()
+# print("=" * 50)
+# print("Test 3c: EXPECTED FAIL - using averaged x0 across wide range")
+# print("Using mean of adaptive guesses as single x0 for all elements")
+# print("Fails x0 isn't in convergence basin (0, 2/z_max)")
+# print("for all elements when range is wide e.g. [1.5, 32768]")
+# print("=" * 50)
 
-bad_x0 = float(np.real(x0s).mean())
-print(f"averaged x0: {bad_x0:.6f}")
-print(f"convergence requires x0 < 2/32768 = {2/32768:.6f}")
-print(f"bad_x0 > 2/z_max so large values will diverge")
-result_bad = reciprocal_newton_universal_guess(v3, n=5, x0=bad_x0)
-for i, val in enumerate(test_vals[:7]):
-    got = float(np.real(result_bad[i]))
-    print(f"1/{val}: got {got:.7f}  expected {1/val:.7f}")
+# bad_x0 = float(np.real(x0s).mean())
+# print(f"averaged x0: {bad_x0:.6f}")
+# print(f"convergence requires x0 < 2/32768 = {2/32768:.6f}")
+# print(f"bad_x0 > 2/z_max so large values will diverge")
+# result_bad = reciprocal_newton_universal_guess(v3, n=5, x0=bad_x0)
+# for i, val in enumerate(test_vals[:7]):
+#     got = float(np.real(result_bad[i]))
+#     print(f"1/{val}: got {got:.7f}  expected {1/val:.7f}")

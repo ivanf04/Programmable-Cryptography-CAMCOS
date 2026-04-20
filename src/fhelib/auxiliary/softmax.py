@@ -1,7 +1,7 @@
 from fhelib import Ciphertext
 from fhelib.lowlevel.sum import intravector_sum
 from fhelib.auxiliary.exponentiate import exponentiate
-from fhelib.auxiliary.reciprocal import division
+from fhelib.auxiliary.reciprocal_univ_guess import division
 import numpy as np
 
 def softmax(ct: Ciphertext) -> Ciphertext:
@@ -15,5 +15,5 @@ def softmax(ct: Ciphertext) -> Ciphertext:
     # sum all
     s = intravector_sum(x_prime)
 
-    # needs to be replaced with FHE division
+    # TODO: needs to be replaced with FHE division
     return np.divide(x_prime, s)

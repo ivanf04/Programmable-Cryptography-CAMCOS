@@ -1,19 +1,18 @@
 from fhelib import Ciphertext
 from fhelib.primitives.add import add
-"""
-Difference method, given to ciphertexts A and B,
- return ciphertext D with elements D_i = (A_i - B_i)
- prerequiste: gif (good if)? 
-"""
-"""
-Precondtion: A and B must be same length 
-Postcondition: D will conation difference of elements in A and B 
-"""
+
 def difference(a: Ciphertext, b: Ciphertext) -> Ciphertext:
-    # TODO raise a length mismatch if A and B are of different lengths
-    len = b.size
-    d = Ciphertext(len)
-    # for i in range(len): 
-    #   d[i] = a[i] - b[i]
+    """
+    Difference method, for ciphertexts A and B
+
+    Raises: ValueError if a and b have different sizes
+    
+    Returns: Ciphertext where D_i = A_i - B_i for all i 
+    """
+    
+    if a.size != b.size:
+        raise ValueError(f"Length mismatch: a has {a.size} elements, b has {b.size} elements")
+    
     d = add(a, -b)
+
     return d

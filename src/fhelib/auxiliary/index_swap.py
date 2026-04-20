@@ -6,8 +6,13 @@ import numpy as np
 def index_swap(v: Ciphertext, i: int, j: int) -> Ciphertext:
     """
     Swaps elements at indices i and j in ciphertext vector v.
-    i should be the lesser index.
+
+    Returns: Ciphertext with elements at i and j swapped
     """
+
+    if i > j:
+        i, j = j, i 
+
     k = len(v)
 
     # c1: 1s everywhere except positions i and j

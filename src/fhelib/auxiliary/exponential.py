@@ -15,6 +15,8 @@ def exponential(x: Ciphertext, n: int) -> Ciphertext:
     :param n: the number of summation terms in the taylor expansion
 
     Returns: Ciphertext where all elements are approximation of e^x_i
+
+    TODO: the reciprocal of factorial terms can be done in plaintext because they are known constants
     """
     # factorials = factorial(n)
     # reciprocal_factorial = reciprocal_partial_sums_geometric(factorials)

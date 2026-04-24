@@ -21,7 +21,7 @@ def reciprocal_partial_sums_geometric(
 ) -> Ciphertext:
     """
     Approximate 1/z using geometric series Taylor expansion
-    1/z = 1 + (z-1) + (z-1)^2 + ... + (z-1)^n
+    1/z = 1 + (1-z) + (1-z)^2 + ... + (1-z)^n
     Only converges if |z-1|<1
 
     :param a: Ciphertext containing values to take reciprocal of
@@ -31,27 +31,26 @@ def reciprocal_partial_sums_geometric(
     Raises: ValueError if assumed_range is provided and outside interval |z - 1| < 1
     """
 
-    
     if assumed_range:
         lo, hi = assumed_range
         if abs(lo - 1) >= 1 or abs(hi - 1) >= 1:
             raise ValueError(
                 f"Assumed range {assumed_range} outside interval |z - 1| <1. Scaling required."
             )
-    # each element as u=z-1 for 1 + u + u^2 + ...
-    x = np.real(a) - 1
+    # each element as u= 1-z for 1 + u + u^2 + ...
+    x = 1 - np.real(a)
     # negative_1 = multiply(np.ones_like(x), -1)
 
     # initial 1 term for each element
     res = np.ones_like(x)
 
-    # power tracks (z-1)^k, multiplied by x each iteration
-    # avoids recomputing from scratch: (z-1)^k = (z-1)^(k-1) * (z-1)
+    # power tracks (1-z)^k, multiplied by x each iteration
+    # avoids recomputing from scratch: (1-z)^k = (1-z)^(k-1) * (1-z)
     power = np.ones_like(x)
 
     for _ in range(1, n + 1):
-        power = multiply(power, x)  # (z-1)^k
-        res = add(res, power)   # accumulate sum
+        power = multiply(power, x)  # (1-z)^k
+        res = add(res, power)  # accumulate sum
         # print(_counts)
         # reset()
 
@@ -99,11 +98,11 @@ def reciprocal_newton_universal_guess(
 
     # Newton iterations: x_{n+1} = 2*x_n - x_n^2 * z
     for _ in range(n):
-        x_n = multiply(2, x)    #2*x_n
-        x_2 = multiply(x, x)   #x_n^2
-        x_2_z = multiply(x_2, z)    #x_n^2 * z
-        negative_x_2_z = multiply(-1, x_2_z)    #-(x_n^2 * z)
-        x = add(x_n, negative_x_2_z)    # 2*x_n - x_n^2 * z
+        x_n = multiply(2, x)  # 2*x_n
+        x_2 = multiply(x, x)  # x_n^2
+        x_2_z = multiply(x_2, z)  # x_n^2 * z
+        negative_x_2_z = multiply(-1, x_2_z)  # -(x_n^2 * z)
+        x = add(x_n, negative_x_2_z)  # 2*x_n - x_n^2 * z
         # print(_counts)
         # reset()
 

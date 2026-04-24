@@ -1,5 +1,9 @@
 from fhelib.ciphertext import Ciphertext
-from fhelib.auxiliary.reciprocal_univ_guess import reciprocal_newton_universal_guess
+from fhelib.auxiliary.reciprocal_univ_guess import (
+    reciprocal_newton_universal_guess,
+    reciprocal_partial_sums_geometric,
+)
+
 # from fhelib.auxiliary.reciprocal_adpt_guess import adaptive_guess
 import numpy as np
 from fhelib.primitives import _counts, reset
@@ -14,7 +18,9 @@ TODO: compare iteration count vs geometric series for same accuracy
 """
 
 print("=" * 50)
-print("Test 1: 1/48 with explicit x0 = 1/64 (hackmd example)")
+print(
+    "Reciprocal Newton Universal Guess Test 1: 1/48 with explicit x0 = 1/64 (hackmd example)"
+)
 print("=" * 50)
 
 v = Ciphertext(4)
@@ -55,6 +61,29 @@ for i, val in enumerate(vals):
     print(f"1/{val}: got {got:.7f}  expected {1/val:.7f}  error {abs(got - 1/val):.2e}")
 print(_counts)
 reset()
+
+
+print()
+print("=" * 50)
+print("Test Geometric series reciprocal (values near 1, |z-1| < 1)")
+print("=" * 50)
+
+# Values in (0, 2) so |z-1| < 1 — convergence zone
+# Padded to power of 2 length with 1.0 (1/1.0 = 1, safe neutral value)
+geo_vals = [0.5, 0.75, 1.0, 1.25, 1.5, 1.9]
+geo_vals_padded = geo_vals + [1.0, 1.0]  # pad to 8
+v4 = Ciphertext(8)
+for idx, val in enumerate(geo_vals_padded):
+    v4.set_element(idx, val)
+
+for n_terms in [5, 10, 20, 50]:
+    print(f"\nn={n_terms} terms:")
+    result4 = reciprocal_partial_sums_geometric(v4, n=n_terms)
+    for i, val in enumerate(geo_vals):  # only print real values, not padding
+        got = float(np.real(result4[i]))
+        print(
+            f"  1/{val}: got {got:.7f}  expected {1/val:.7f}  error {abs(got - 1/val):.2e}"
+        )
 
 # print()
 # print("=" * 50)

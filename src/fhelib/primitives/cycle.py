@@ -1,5 +1,5 @@
 from fhelib import Ciphertext
-from fhelib.primitives import _counts 
+from fhelib.primitives import _counts
 import numpy as np
 
 """"
@@ -14,6 +14,8 @@ Future:
 See documentation for examples:
 https://numpy.org/doc/stable/reference/generated/numpy.roll.html
 """
+
+
 def cycle(ct: Ciphertext, k: int):
     _counts["cycle"] += 1
     return np.roll(ct, k)

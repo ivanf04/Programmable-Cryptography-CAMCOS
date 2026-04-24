@@ -6,3 +6,4 @@ from .div_newton import div_newton
 from .sign import sign, sign_half_equality, sign_heaviside
 from .factorial import factorial
 from .power import rasie_to_power
+from .sigmoid import sigmoid

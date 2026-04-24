@@ -1,5 +1,5 @@
 import numpy as np 
-from fhelib.lowlevel.realify import realify
+from fhelib.lowlevel import realify, sigmoid
 from fhelib import Ciphertext
 from fhelib.primitives import add, multiply
 from fhelib.auxiliary.reciprocal_univ_guess import reciprocal_newton_universal_guess
@@ -24,7 +24,7 @@ sigmoid based approximation for the sign function
 """
 def sign(x: Ciphertext, k=10.0, power=8, tol=1e-6) -> Ciphertext:
     x = realify(x)  
-    s = reciprocal_newton_universal_guess((1.0 + np.exp(-k * x)), assumed_range=(0, 1000))
+    s = reciprocal_newton_universal_guess(sigmoid(x), assumed_range=(0, 1000))
     result = s
     for _ in range(power - 1):
         result = multiply(result, s)
@@ -35,7 +35,8 @@ Sign function as described in the "Spring 2026" hackmd
 """
 def sign_half_equality(x: Ciphertext, k=10.0, tol=0.25) -> Ciphertext:
     # print(f"intial CT:\n{x}")
-    s = (1.0 + np.exp(-k * x))
+    # s = (1.0 + np.exp(-k * x))
+    s = sigmoid(x)
     return reciprocal_newton_universal_guess(s, assumed_range=(0,1000))
 
 

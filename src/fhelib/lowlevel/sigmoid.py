@@ -17,7 +17,7 @@ subsequent FHE operations can scale the encrypted x^k terms.
 import math
 import numpy as np
 from fhelib.primitives import add, multiply
-from fhelib.lowlevel import rasie_to_power
+from fhelib.lowlevel.power import rasie_to_power
 from fhelib import Ciphertext
 
 

@@ -28,6 +28,13 @@ class Ciphertext(np.ndarray):
         self.ct = np.zeros(length, dtype=complex)
         self.level = 15
 
+    def __array_finalize__(self, obj):
+        # called whenever a new Ciphertext is produced by numpy (view, ufunc output, etc.)
+        # __init__ is NOT called in those cases, so level must be set here
+        if obj is None:
+            return
+        self.level = getattr(obj, 'level', 15)
+
     # check if a number is a power of two
     def _is_power_of_2(self, length):
         return length > 0 and (length & (length - 1)) == 0

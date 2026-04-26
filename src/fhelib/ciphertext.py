@@ -9,6 +9,7 @@ class Ciphertext(np.ndarray):
         obj = np.zeros(length, dtype=complex).view(
             cls
         )  # create array, cast to Ciphertext type
+        obj.level = 15
         return obj  # return it directly
 
     # default ciphertext size n = N/2 (as noted in PiFHE hackmd)
@@ -16,6 +17,7 @@ class Ciphertext(np.ndarray):
         r = 15  # 16-1
         n = 2**r  # 2^(16-1)
         self.ct = np.zeros(n, dtype=complex)
+        self.level = 15
 
     def __init__(self, length):
         """
@@ -29,11 +31,11 @@ class Ciphertext(np.ndarray):
         self.level = 15
 
     def __array_finalize__(self, obj):
-        # called whenever a new Ciphertext is produced by numpy (view, ufunc output, etc.)
-        # __init__ is NOT called in those cases, so level must be set here
+        """Called whenever numpy creates a new view of this array."""
         if obj is None:
             return
-        self.level = getattr(obj, 'level', 15)
+        # inherit level from parent array if it has one, else default
+        self.level = getattr(obj, "level", 15)
 
     # check if a number is a power of two
     def _is_power_of_2(self, length):

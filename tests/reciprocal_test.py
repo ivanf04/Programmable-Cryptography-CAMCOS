@@ -84,6 +84,7 @@ for n_terms in [5, 10, 20, 50]:
         print(
             f"  1/{val}: got {got:.7f}  expected {1/val:.7f}  error {abs(got - 1/val):.2e}"
         )
+        print(_counts)
 
 # print()
 # print("=" * 50)

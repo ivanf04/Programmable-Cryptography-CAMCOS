@@ -17,7 +17,7 @@ subsequent FHE operations can scale the encrypted x^k terms.
 import math
 import numpy as np
 from fhelib.primitives import add, multiply
-from fhelib.lowlevel.power import rasie_to_power
+from fhelib.lowlevel.power import raise_to_power
 from fhelib import Ciphertext
 
 
@@ -36,11 +36,12 @@ def exp_neg_coefficients(n: int, ct_length: int) -> list[Ciphertext]:
     for k in range(n + 1):
         scalar = ((-1) ** k) / math.factorial(k)
         ct = Ciphertext(ct_length)
-        ct[:] = scalar          # broadcast scalar into every slot
+        ct[:] = scalar  # broadcast scalar into every slot
         coefficients.append(ct)
     return coefficients
 
-def exp_x(x: Ciphertext, n:int) -> list[Ciphertext]:
+
+def exp_x(x: Ciphertext, n: int) -> list[Ciphertext]:
     """
     Compute the encrypted powers of x up to degree n for use in the e^{-x} Taylor expansion.
 
@@ -59,16 +60,17 @@ def exp_x(x: Ciphertext, n:int) -> list[Ciphertext]:
     powers: list[Ciphertext] = []
 
     ct_0 = Ciphertext(length)
-    ct_0[:] = 1   
-    powers.append(ct_0)     #x^0 = 1     
-    
-    powers.append(x.copy())      #append x^{1} to the list (no multiplication needed)
+    ct_0[:] = 1
+    powers.append(ct_0)  # x^0 = 1
+
+    powers.append(x.copy())  # append x^{1} to the list (no multiplication needed)
 
     for k in range(2, n + 1):
-        powers.append(rasie_to_power(x, k)) #append x^{k} to the list 
+        powers.append(rasie_to_power(x, k))  # append x^{k} to the list
     return powers
 
-def exp_expansion(x: Ciphertext, n:int) -> Ciphertext:
+
+def exp_expansion(x: Ciphertext, n: int) -> Ciphertext:
     """
     Approximate e^{-x} using a degree-n Taylor expansion evaluated over encrypted values.
 
@@ -91,17 +93,19 @@ def exp_expansion(x: Ciphertext, n:int) -> Ciphertext:
         ct_temps.append(ct)
 
     result = ct_temps[0]
-    for j in range(1, n +1):
+    for j in range(1, n + 1):
         result = add(result, ct_temps[j])
     return result
+
 
 # Step 1: create the constant coefficients of the u expansion in plaintext then encrypt
 #   → done by exp_neg_coefficients above
 # Step 2: calculate x^k where k goes up to n (the degree of the e^{-x} expansion)
 #   -> done by exp_x
 # Step 3: multiply each x^k by its coefficient and accumulate the sum → gives u = e^{-x} approx
-#   -> done by exp_expansion above 
+#   -> done by exp_expansion above
 # Step 4: use the geometric series  1/(1-u) = 1 + u + u^2 + … + u^m  to approximate sigmoid
+
 
 def sigmoid(x: Ciphertext, n: int = 5, m: int = 5) -> Ciphertext:
     """
@@ -136,9 +140,9 @@ def sigmoid(x: Ciphertext, n: int = 5, m: int = 5) -> Ciphertext:
 
     u_0 = Ciphertext(x.size)
     u_0[:] = 1
-    u_powers.append(u_0)       # r^0 = 1
+    u_powers.append(u_0)  # r^0 = 1
 
-    u_powers.append(neg_u)     # r^1 = -u
+    u_powers.append(neg_u)  # r^1 = -u
 
     for i in range(2, m + 1):  # r^2 through r^m
         u_powers.append(rasie_to_power(neg_u, i))
@@ -149,7 +153,3 @@ def sigmoid(x: Ciphertext, n: int = 5, m: int = 5) -> Ciphertext:
         u_sum = add(u_sum, u_powers[j])
 
     return u_sum
-    
-    
-
-

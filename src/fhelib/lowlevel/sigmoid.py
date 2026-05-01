@@ -50,7 +50,7 @@ def exp_x(x: Ciphertext, n: int) -> list[Ciphertext]:
 
     x^0 is the constant Ciphertext with every slot set to 1.
     x^1 is a copy of the input x.
-    x^k for k >= 2 is computed via repeated multiplication using rasie_to_power.
+    x^k for k >= 2 is computed via repeated multiplication using raise_to_power.
 
     :param x: Encrypted input values.
     :param n: Highest power to compute (inclusive); produces n+1 terms.
@@ -66,7 +66,7 @@ def exp_x(x: Ciphertext, n: int) -> list[Ciphertext]:
     powers.append(x.copy())  # append x^{1} to the list (no multiplication needed)
 
     for k in range(2, n + 1):
-        powers.append(rasie_to_power(x, k))  # append x^{k} to the list
+        powers.append(raise_to_power(x, k))  # append x^{k} to the list
     return powers
 
 
@@ -145,7 +145,7 @@ def sigmoid(x: Ciphertext, n: int = 5, m: int = 5) -> Ciphertext:
     u_powers.append(neg_u)  # r^1 = -u
 
     for i in range(2, m + 1):  # r^2 through r^m
-        u_powers.append(rasie_to_power(neg_u, i))
+        u_powers.append(raise_to_power(neg_u, i))
 
     # sum the geometric series: 1 + r + r^2 + ... + r^m ≈ 1/(1-r) = sigmoid(x)
     u_sum = u_powers[0]
@@ -153,3 +153,6 @@ def sigmoid(x: Ciphertext, n: int = 5, m: int = 5) -> Ciphertext:
         u_sum = add(u_sum, u_powers[j])
 
     return u_sum
+
+
+def 

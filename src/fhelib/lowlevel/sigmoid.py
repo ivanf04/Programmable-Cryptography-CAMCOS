@@ -153,6 +153,3 @@ def sigmoid(x: Ciphertext, n: int = 5, m: int = 5) -> Ciphertext:
         u_sum = add(u_sum, u_powers[j])
 
     return u_sum
-
-
-def 

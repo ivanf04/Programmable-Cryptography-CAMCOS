@@ -1,5 +1,5 @@
 import numpy as np
-from fhelib.lowlevel import realify, sigmoid
+from fhelib.lowlevel import realify, sigmoid, tanh
 from fhelib import Ciphertext
 from fhelib.primitives import add, multiply
 from fhelib.auxiliary.reciprocal_univ_guess import (
@@ -30,10 +30,10 @@ sigmoid based approximation for the sign function
 """
 
 
-def sign(x: Ciphertext, k=10.0, power=8, tol=1e-6) -> Ciphertext:
+def sign(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Ciphertext:
     x = realify(x)
-    s = reciprocal_newton_universal_guess(sigmoid(x), assumed_range=(0, 1000))
-    result = s
+    # s = reciprocal_newton_universal_guess(sigmoid(x), assumed_range=(0, 1000))
+    result = sigmoid(x)
     for _ in range(power - 1):
         result = multiply(result, s)
     return result
@@ -44,25 +44,32 @@ Sign function as described in the "Spring 2026" hackmd
 """
 
 
-def sign_half_equality(x: Ciphertext, k=10.0, tol=0.25) -> Ciphertext:
-    # print(f"intial CT:\n{x}")
-    # s = (1.0 + np.exp(-k * x))
-    s = sigmoid(x)
-    return reciprocal_newton_universal_guess(s, assumed_range=(0, 1000))
-
-
-"""
-Use the original sign method to create a heaviside-type function
-see "CAMCOS 2026 Spring" hackmd for details 
-TODO: Make FHE legal so we can count primitive operations
-"""
+# def sign_half_equality(x: Ciphertext, k=10.0, tol=0.25) -> Ciphertext:
+#     # print(f"intial CT:\n{x}")
+#     # s = (1.0 + np.exp(-k * x))
+#     s = sigmoid(x)
+#     return reciprocal_newton_universal_guess(s, assumed_range=(0, 1000))
 
 
 def sign_heaviside(x: Ciphertext, a, b, c, power=10) -> Ciphertext:
-    b_a = add(b, multiply(-1, a))
-    half_equality = sign_half_equality(add(x, multiply(-1, c)), k=power)
-    b_a_half_eqaul = multiply(b_a, half_equality)
-    return add(a, b_a_half_eqaul)
+    """
+    Approximates the piecewise function: a if x <= c, b if x > c.
+
+    Computes a + (b - a) * H(x - c), where H is approximated by `sign`
+    (sigmoid-based). As power increases the transition at x = c sharpens.
+
+    :param x:     Encrypted input values.
+    :param a:     Output value (or ciphertext) when x <= c.
+    :param b:     Output value (or ciphertext) when x > c.
+    :param c:     Threshold — transition point between a and b.
+    :param power: Steepness of the sigmoid used in `sign`; higher = sharper.
+    :return:      Ciphertext approximating the step from a to b at x = c.
+
+    TODO: Make FHE-legal so primitive operation counts are accurate.
+    """
+    b_a = add(b, multiply(-1, a))                    # b - a
+    half_equality = sign(add(x, multiply(-1, c)), k=power)  # H(x - c) ≈ 0 or 1
+    return add(a, multiply(b_a, half_equality))       # a + (b - a) * H(x - c)
 
 
 def sign_tanh(x: Ciphertext, k: float = 10.0, n_terms: int = 9) -> Ciphertext:

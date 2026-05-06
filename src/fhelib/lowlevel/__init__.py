@@ -11,3 +11,4 @@ from .sign import sign, sign_half_equality, sign_heaviside
 from .factorial import factorial
 from .power import raise_to_power
 from .sigmoid import sigmoid
+from .tanh import tanh

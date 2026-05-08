@@ -5,29 +5,21 @@ import numpy as np
 # Cypher text class
 class Ciphertext(np.ndarray):
 
-    def __new__(cls, length):  # __new__ instead of __init__ (ndarray requires this)
-        obj = np.zeros(length, dtype=complex).view(
-            cls
-        )  # create array, cast to Ciphertext type
+    def __new__(cls, length, value=None):  # __new__ instead of __init__ (ndarray requires this)
+        if value is None:
+            obj = np.zeros(length, dtype=complex).view(
+                cls
+            )  # create array, cast to Ciphertext type
+        else:
+            obj = np.full(length, value, dtype=complex).view(
+                cls
+            )
         obj.level = 15
         return obj  # return it directly
 
-    # default ciphertext size n = N/2 (as noted in PiFHE hackmd)
-    def __init__(self):
-        r = 15  # 16-1
-        n = 2**r  # 2^(16-1)
-        self.ct = np.zeros(n, dtype=complex)
-        self.level = 15
-
-    def __init__(self, length):
-        """
-        This initializes the ct to have a default length of N / 2 and elements equal to 0 (???)
-        TODO: find out how to intitialize all elements to zero
-        """
+    def __init__(self, length, value=None):
         if not self._is_power_of_2(length):
             raise ValueError(f"Length must be a power of two, got {length}")
-
-        self.ct = np.zeros(length, dtype=complex)
         self.level = 15
 
     def __array_finalize__(self, obj):

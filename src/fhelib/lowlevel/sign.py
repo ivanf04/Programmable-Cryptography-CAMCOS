@@ -1,13 +1,13 @@
 import numpy as np
-from fhelib.lowlevel import realify, sigmoid, tanh
+from fhelib.lowlevel.realify import realify
+from fhelib.lowlevel.sigmoid import sigmoid
+from fhelib.lowlevel.tanh import tanh
 from fhelib import Ciphertext
 from fhelib.primitives import add, multiply
 from fhelib.auxiliary.reciprocal_univ_guess import (
     reciprocal_newton_universal_guess,
     reciprocal_partial_sums_geometric,
 )
-
-from fhelib.lowlevel.tanh import tanh
 
 """
 Returns 0 if x_i is <= 0 or 1 if x_i > 0
@@ -67,9 +67,11 @@ def sign_heaviside(x: Ciphertext, a, b, c, power=10) -> Ciphertext:
 
     TODO: Make FHE-legal so primitive operation counts are accurate.
     """
-    b_a = add(b, multiply(-1, a))                    # b - a
-    half_equality = sign(add(x, multiply(-1, c)), k=power)  # H(x - c) ≈ 0 or 1
-    return add(a, multiply(b_a, half_equality))       # a + (b - a) * H(x - c)
+    # b_a = add(b, a * -1)                    # b - a
+    b_a = b + (a * -1)
+    half_equality = sign(add(x, (c * -1)), k=power)  # H(x - c) ≈ 0 or 1
+    return a + (b_a * half_equality)
+    # return add(a, multiply(b_a, half_equality))       # a + (b - a) * H(x - c)
 
 
 def sign_tanh(x: Ciphertext, k: float = 10.0, n_terms: int = 9) -> Ciphertext:

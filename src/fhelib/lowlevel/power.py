@@ -20,7 +20,8 @@ def raise_to_power(x: Ciphertext, a: int) -> Ciphertext:
         return x.copy()
 
     result = None
-    base = x.copy()
+    base = Ciphertext(x.copy())
+    
 
     while a > 0:
         if a % 2 == 1:  # if current term is odd

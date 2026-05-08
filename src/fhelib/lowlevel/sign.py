@@ -90,7 +90,7 @@ def sign_tanh(x: Ciphertext, k: float = 10.0, n_terms: int = 9) -> Ciphertext:
     x = realify(x)
 
     # scale input by k (int multiply costs no level)
-    kx = multiply(int(k), x) if float(k).is_integer() else multiply(k, x)
+    kx = (int(k) * x) if float(k).is_integer() else multiply(k, x)
 
 
     # TODO: can I change this to plaintext addition and multiplication? 

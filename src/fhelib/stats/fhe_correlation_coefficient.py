@@ -1,5 +1,5 @@
 import numpy as np
-from src.fhelib.stats.fhe_mean import vector_mean, intra_vector_sum
+from fhelib.stats.fhe_mean import vector_mean, intra_vector_sum
 
 
 def demean(z):

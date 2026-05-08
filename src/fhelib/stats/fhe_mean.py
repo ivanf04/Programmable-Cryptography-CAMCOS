@@ -1,4 +1,5 @@
 import numpy as np
+from fhelib.primitives import add
 
 
 def cycle(v, k):
@@ -18,7 +19,7 @@ def intra_vector_sum(z):
     N = len(v)
     step = 1
     while step < N:
-        v = v + cycle(v, step)
+        v = add(v, cycle(v, step))
         step *= 2
     return v
 

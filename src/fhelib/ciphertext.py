@@ -6,20 +6,19 @@ import numpy as np
 class Ciphertext(np.ndarray):
 
     def __new__(cls, length, value=None):  # __new__ instead of __init__ (ndarray requires this)
-        if value is None:
-            obj = np.zeros(length, dtype=complex).view(
-                cls
-            )  # create array, cast to Ciphertext type
+        if isinstance(length, np.ndarray):
+            obj = np.asarray(length, dtype=complex).view(cls)
+        elif value is None:
+            obj = np.zeros(length, dtype=complex).view(cls)
         else:
-            obj = np.full(length, value, dtype=complex).view(
-                cls
-            )
+            obj = np.full(length, value, dtype=complex).view(cls)
         obj.level = 15
-        return obj  # return it directly
+        return obj
 
-    def __init__(self, length, value=None):
-        if not self._is_power_of_2(length):
-            raise ValueError(f"Length must be a power of two, got {length}")
+    def __init__(self, length, value=None):  # value is consumed in __new__
+        actual_length = len(length) if isinstance(length, np.ndarray) else length
+        if not self._is_power_of_2(actual_length):
+            raise ValueError(f"Length must be a power of two, got {actual_length}")
         self.level = 15
 
     def __array_finalize__(self, obj):

@@ -92,4 +92,8 @@ def sign_tanh(x: Ciphertext, k: float = 10.0, n_terms: int = 9) -> Ciphertext:
     # scale input by k (int multiply costs no level)
     kx = multiply(int(k), x) if float(k).is_integer() else multiply(k, x)
 
-    return tanh(kx, n_terms=n_terms)
+
+    # TODO: can I change this to plaintext addition and multiplication? 
+    sign_approx = multiply(add(tanh(kx, n_terms=n_terms), Ciphertext(x.size, 1)), Ciphertext(x.size, 0.5))    #(tanh(kx)) / 2 as described in hackmd
+
+    return sign_approx

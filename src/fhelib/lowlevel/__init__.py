@@ -12,3 +12,22 @@ from fhelib.lowlevel.factorial import factorial
 from fhelib.lowlevel.power import raise_to_power
 from fhelib.lowlevel.sigmoid import sigmoid
 from fhelib.lowlevel.tanh import tanh
+
+__all__ = [
+    "dot_product",
+    "complex_inner_product",
+    "realify",
+    "nxn_matrix_multiply_n_vectors",
+    "make_mask",
+    "matrix_multiply_n2_vector_2x2",
+    "intravector_sum_naive",
+    "intravector_sum",
+    "intravector_partsum",
+    "div_newton",
+    "sign",
+    "sign_heaviside",
+    "factorial",
+    "raise_to_power",
+    "sigmoid",
+    "tanh",
+]

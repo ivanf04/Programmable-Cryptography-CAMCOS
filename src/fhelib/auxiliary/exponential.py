@@ -4,7 +4,7 @@ FHE legal approximation of the exponential function
 import numpy as np
 from fhelib import Ciphertext
 from fhelib.primitives import add, multiply
-from fhelib.lowlevel import factorial, rasie_to_power
+from fhelib.lowlevel import factorial, raise_to_power
 from fhelib.auxiliary.reciprocal_univ_guess import reciprocal_partial_sums_geometric
 
 def exponential(x: Ciphertext, n: int) -> Ciphertext:
@@ -25,7 +25,7 @@ def exponential(x: Ciphertext, n: int) -> Ciphertext:
     b = add(b, x)
 
     for i in range(2, n + 1):
-        x_raised = rasie_to_power(x, i)
+        x_raised = raise_to_power(x, i)
         reciprocal_factorial_term = reciprocal_partial_sums_geometric(factorial(i))
         b = add(b, multiply(x_raised, reciprocal_factorial_term))
         

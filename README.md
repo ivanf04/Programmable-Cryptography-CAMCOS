@@ -9,12 +9,13 @@ Note: for the remainder of this document, "ciphertext" may be abbreviated as "ct
 
 ### Dependencies 
 
-* Pyhthon 3.14.3
+* Python 3.14.3
 * numpy 2.4.3
 
 ### Getting Started 
 
 * First clone the repository, run:  "git clone https://github.com/ivanf04/Programmable-Cryptography-CAMCOS"
+* python -m venv venv
 * Next start your virtual environment, from the project directory run:source venv/bin/activate
 * Then install dependencies: pip install . 
 

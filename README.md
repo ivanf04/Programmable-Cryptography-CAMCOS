@@ -5,6 +5,25 @@ These scripts are written in Python and heavily reliant on the numpy library. Yo
 
 Note: for the remainder of this document, "ciphertext" may be abbreviated as "ct"
 
+## Getting Started
+
+### Dependencies 
+
+* Pyhthon 3.14.3
+* numpy 2.4.3
+
+### Getting Started 
+
+* First clone the repository, run:  "git clone https://github.com/ivanf04/Programmable-Cryptography-CAMCOS"
+* Next start your virtual environment, from the project directory run:source venv/bin/activate
+* Then install dependencies: pip install . 
+
+### Executing Programs 
+
+* Functions are wriiten in the src/fhelib directory, test for these functions are found in /test
+* Test files names pretain to the specific function they are testing. Simply run the files in your IDE to see test reults in your terminal
+
+
 ## The Base Moves 
 
 These are the four core functions that we assume work within our system. 

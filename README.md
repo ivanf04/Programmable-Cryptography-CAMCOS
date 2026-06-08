@@ -21,18 +21,18 @@ Note: for the remainder of this document, "ciphertext" may be abbreviated as "ct
 
 ### Executing Programs 
 
-* Functions are wriiten in the src/fhelib directory, test for these functions are found in /test
+* Functions are writen in the /src/fhelib directory, test for these functions are found in /test
 * Test files names pretain to the specific function they are testing. Simply run the files in your IDE to see test reults in your terminal
 
-### Table of contents 
+## Table of contents 
 
-## Primitives
+### Primitives
 * [addition](src/fhelib/primitives/add.py)
 * [multiplication](src/fhelib/primitives/multiply.py)
 * [cycle](src/fhelib/primitives/cycle.py)
 * [conjugate](src/fhelib/primitives/conjugate.py)
 
-## Low Level
+### Low Level
 * [div_newton](src/fhelib/lowlevel/div_newton.py)
 * [dot_product](src/fhelib/lowlevel/dot_product.py)
 * [factorial](src/fhelib/lowlevel/factorial.py)
@@ -44,7 +44,7 @@ Note: for the remainder of this document, "ciphertext" may be abbreviated as "ct
 * [sum](src/fhelib/lowlevel/sum.py)
 * [tanh](src/fhelib/lowlevel/tanh.py)
 
-## Auxiliary
+### Auxiliary
 * [difference](src/fhelib/auxiliary/difference.py)
 * [difference_matrix](src/fhelib/auxiliary/difference_matrix.py)
 * [equality](src/fhelib/auxiliary/equality.py)
@@ -55,7 +55,7 @@ Note: for the remainder of this document, "ciphertext" may be abbreviated as "ct
 * [reciprocal_univ_guess](src/fhelib/auxiliary/reciprocal_univ_guess.py)
 * [softmax](src/fhelib/auxiliary/softmax.py)
 
-## Stats
+### Stats
 * [fhe_correlation_coefficient](src/fhelib/stats/fhe_correlation_coefficient.py)
 * [fhe_mean](src/fhelib/stats/fhe_mean.py)
 * [fhe_median](src/fhelib/stats/fhe_median.py)

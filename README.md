@@ -23,6 +23,43 @@ Note: for the remainder of this document, "ciphertext" may be abbreviated as "ct
 * Functions are wriiten in the src/fhelib directory, test for these functions are found in /test
 * Test files names pretain to the specific function they are testing. Simply run the files in your IDE to see test reults in your terminal
 
+### Table of contents 
+
+## Primitives
+* [addition](src/fhelib/primitives/add.py)
+* [multiplication](src/fhelib/primitives/multiply.py)
+* [cycle](src/fhelib/primitives/cycle.py)
+* [conjugate](src/fhelib/primitives/conjugate.py)
+
+## Low Level
+* [div_newton](src/fhelib/lowlevel/div_newton.py)
+* [dot_product](src/fhelib/lowlevel/dot_product.py)
+* [factorial](src/fhelib/lowlevel/factorial.py)
+* [matrix_multiplication](src/fhelib/lowlevel/matrix_multiplication.py)
+* [power](src/fhelib/lowlevel/power.py)
+* [realify](src/fhelib/lowlevel/realify.py)
+* [sigmoid](src/fhelib/lowlevel/sigmoid.py)
+* [sign](src/fhelib/lowlevel/sign.py)
+* [sum](src/fhelib/lowlevel/sum.py)
+* [tanh](src/fhelib/lowlevel/tanh.py)
+
+## Auxiliary
+* [difference](src/fhelib/auxiliary/difference.py)
+* [difference_matrix](src/fhelib/auxiliary/difference_matrix.py)
+* [equality](src/fhelib/auxiliary/equality.py)
+* [exponential](src/fhelib/auxiliary/exponential.py)
+* [index_swap](src/fhelib/auxiliary/index_swap.py)
+* [max](src/fhelib/auxiliary/max.py)
+* [reciprocal_adpt_guess](src/fhelib/auxiliary/reciprocal_adpt_guess.py)
+* [reciprocal_univ_guess](src/fhelib/auxiliary/reciprocal_univ_guess.py)
+* [softmax](src/fhelib/auxiliary/softmax.py)
+
+## Stats
+* [fhe_correlation_coefficient](src/fhelib/stats/fhe_correlation_coefficient.py)
+* [fhe_mean](src/fhelib/stats/fhe_mean.py)
+* [fhe_median](src/fhelib/stats/fhe_median.py)
+* [mode](src/fhelib/stats/mode.py)
+* [moment_generator](src/fhelib/stats/moment_generator.py)
 
 ## The Base Moves 
 
@@ -39,38 +76,6 @@ Simply replace ct* with the desired ciphertext variables to operate on (and k wi
 
 See [internal document?] for more details.
 
-## Quickstart Guide for Limited Programming Background
-
-To create a new function, use roughly the following format:
-
-```python
-def function_name(user_ct):
-    local_ct = np.copy(user_ct)
-    # sequence of primitive moves (and helper functions)
-    return local_ct 
-```
-
-"function_name" is the name of your function. Be descriptive of what you're trying to achieve! 
-
-"user_ct" is the ciphertext provided by the user, or you when you call the function elsewhere.
-
-"local_ct" is a new ciphertext to be used within the function. In this case, local_ct is a copy of user_ct.
-
-"#" marks the start of a comment (code that won't get executed).
-
-"return" ends the function and returns what follows to where the function was called. 
-
-If developing a function within a separate .py file, include the following line at the top of the file to use the functions within fhe_lib: 
-
-```python
-import fhe_lib as fhel
-```
-
-To use a function from fhe_lib in a separate .py file, call it like so:
-
-```python
-ct_to_modify = fhel.dotpr(cta, ctb)
-```
 
 ## License 
 

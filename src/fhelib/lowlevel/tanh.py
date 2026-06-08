@@ -1,9 +1,7 @@
 """
 FHE legal tanh approximation using the Taylor series expansion:
 
-  tanh(x) ≈ x - (1/3)x^3 + (2/15)x^5 - (17/315)x^7 + (62/2835)x^9
-             - (1382/155925)x^11 + (21844/6081075)x^13
-             - (929569/638512875)x^15 + (6404582/10854718875)x^17
+  (tanh(x) + 1) / 2
 
 Only odd powers appear. Coefficients are the Bernoulli-number-derived
 rational constants from the tanh Maclaurin series.
@@ -47,7 +45,7 @@ def tanh_coefficients(ct_length: int) -> list[tuple[int, Ciphertext]]:
     return result
 
 
-def tanh(x: Ciphertext, n_terms: int = 9) -> Ciphertext:
+def tanh(x: Ciphertext, n_terms: int = 9, k: int=1) -> Ciphertext:
     """
     Approximate tanh(x) using the first n_terms of its Taylor expansion.
 
@@ -59,6 +57,11 @@ def tanh(x: Ciphertext, n_terms: int = 9) -> Ciphertext:
         raise ValueError(f"n_terms must be between 1 and {len(TANH_COEFFICIENTS)}")
 
     coeffs = tanh_coefficients(x.size)[:n_terms]
+
+    # create Ciphertext with value k to scale input 
+    ck = Ciphertext(x.size)
+    ck[:] = k
+    x = multiply(x, ck)
 
     # compute each term: c_k * x^degree
     terms = []

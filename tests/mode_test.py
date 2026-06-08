@@ -1,8 +1,10 @@
 from fhelib import Ciphertext
 from fhelib.stats.mode import mode
+from fhelib.primitives import get_counts, reset
 """
 Test file for mode.py
 """
+reset()
 values = [-1, 0.5, -1, 1]
 a = Ciphertext(len(values))
 for idx, val in enumerate(values):
@@ -15,3 +17,4 @@ print("=" * 50)
 
 result = mode(a)
 print(f"Result: {result}")
+print(f"{get_counts()}")

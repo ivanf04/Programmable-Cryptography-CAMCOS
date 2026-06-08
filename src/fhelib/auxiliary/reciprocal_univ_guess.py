@@ -2,17 +2,16 @@ import numpy as np
 from fhelib.ciphertext import Ciphertext
 from fhelib.primitives import add, multiply, _counts, reset
 
-"""
-Out-of-spec implementation of division 
 
-using numpy division as a placeholder for higher complexity functions
-returns a ciphetext containing ai/bi in each corresponding index
-
-TODO: discuss how to implement polynomial estimation with math theory team.
-"""
 
 
 def division(a: Ciphertext, b: Ciphertext):
+    """
+    Out-of-spec implementation of division 
+
+    using numpy division as a placeholder for higher complexity functions
+    returns a ciphetext containing ai/bi in each corresponding index
+    """
     return np.divide(a, b)
 
 
@@ -37,7 +36,8 @@ def reciprocal_partial_sums_geometric(
             raise ValueError(
                 f"Assumed range {assumed_range} outside interval |z - 1| <1. Scaling required."
             )
-    # each element as u= 1-z for 1 + u + u^2 + ...
+    # each element as u=z-1 for 1 + u + u^2 + ...
+    # TODO: difference, add replacement
     x = 1 - np.real(a)
     # negative_1 = multiply(np.ones_like(x), -1)
 

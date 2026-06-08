@@ -6,7 +6,6 @@ from fhelib.primitives import add, multiply, _counts
 
 def adaptive_guess(ct: Ciphertext, b: int = 16) -> Ciphertext:
     """
-    Returns the largest power of 2 smaller than x
     Used for Newton's method for reciprocal
     Returns 1/2^n where 2^n < z < 2^(n+1) for each element.
 
@@ -19,6 +18,10 @@ def adaptive_guess(ct: Ciphertext, b: int = 16) -> Ciphertext:
     Args:
         ct: input Ciphertext
         b: bound, assumes all values in [1, 2^b]
+
+    Returns:
+        Fraction with denominator being the largest power of 2 smaller than x
+
     """
     # Each element starts with 1
     result = np.ones_like(ct)

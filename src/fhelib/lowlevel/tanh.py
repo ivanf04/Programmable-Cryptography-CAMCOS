@@ -1,9 +1,7 @@
 """
 FHE legal tanh approximation using the Taylor series expansion:
 
-  tanh(x) ≈ x - (1/3)x^3 + (2/15)x^5 - (17/315)x^7 + (62/2835)x^9
-             - (1382/155925)x^11 + (21844/6081075)x^13
-             - (929569/638512875)x^15 + (6404582/10854718875)x^17
+  (tanh(x) + 1) / 2
 
 Only odd powers appear. Coefficients are the Bernoulli-number-derived
 rational constants from the tanh Maclaurin series.
@@ -19,15 +17,15 @@ from fhelib import Ciphertext
 # Tanh Taylor coefficients: (degree, numerator, denominator)
 # Only odd degrees, matching the image formula
 TANH_COEFFICIENTS = [
-    (1, 1, 1),
-    (3, -1, 3),
-    (5, 2, 15),
-    (7, -17, 315),
-    (9, 62, 2835),
-    (11, -1382, 155925),
-    (13, 21844, 6081075),
-    (15, -929569, 638512875),
-    (17, 6404582, 10854718875),
+    (1, 1, 2),
+    (3, -1, 6),
+    (5, 1, 15),
+    (7, -17, 630),
+    (9, 31, 2835),
+    (11, -691, 155925),
+    (13, 10922, 6081075),
+    (15, -929569, 1277025750),
+    (17, 3202291, 10854718875),
 ]
 
 
@@ -38,7 +36,11 @@ def tanh_coefficients(ct_length: int) -> list[tuple[int, Ciphertext]]:
     :param ct_length: Length of each output Ciphertext (must be a power of 2).
     :return: List of (degree, Ciphertext) pairs for each term.
     """
+
+    # TODO: add the constant term 0.5 to the first element of the ciphertext
     result = []
+    result.append((0, Ciphertext(ct_length, 0.5)))
+    print(f'Result: {result}')
     for degree, num, den in TANH_COEFFICIENTS:
         scalar = num / den
         ct = Ciphertext(ct_length)
@@ -47,7 +49,7 @@ def tanh_coefficients(ct_length: int) -> list[tuple[int, Ciphertext]]:
     return result
 
 
-def tanh(x: Ciphertext, n_terms: int = 9) -> Ciphertext:
+def tanh(x: Ciphertext, n_terms: int = 9, k: int=1) -> Ciphertext:
     """
     Approximate tanh(x) using the first n_terms of its Taylor expansion.
 
@@ -60,10 +62,17 @@ def tanh(x: Ciphertext, n_terms: int = 9) -> Ciphertext:
 
     coeffs = tanh_coefficients(x.size)[:n_terms]
 
+    # create Ciphertext with value k to scale input 
+    ck = Ciphertext(x.size)
+    ck[:] = k
+    x = multiply(x, ck)
+
     # compute each term: c_k * x^degree
     terms = []
-    for degree, c_ct in coeffs:
-        x_pow = x.copy() if degree == 1 else raise_to_power(x, degree)
+    _, constant_ct = coeffs[0]
+    terms.append(constant_ct)   #append the x^0 term
+    for degree, c_ct in coeffs[1:]:     #skip the first element since you cannot raise to power 0
+        x_pow = raise_to_power(x, degree)
         term = multiply(c_ct, x_pow)
         terms.append(term)
 

@@ -15,7 +15,7 @@ from fhelib import Ciphertext
 
 
 # Tanh Taylor coefficients: (degree, numerator, denominator)
-# Only odd degrees, matching the image formula
+# Note: missing the initial constant term of 0.5, it is added upon construction of the entire (degree, ct) list of tuples
 TANH_COEFFICIENTS = [
     (1, 1, 2),
     (3, -1, 6),
@@ -37,9 +37,9 @@ def tanh_coefficients(ct_length: int) -> list[tuple[int, Ciphertext]]:
     :return: List of (degree, Ciphertext) pairs for each term.
     """
 
-    # TODO: add the constant term 0.5 to the first element of the ciphertext
+    
     result = []
-    result.append((0, Ciphertext(ct_length, 0.5)))
+    result.append((0, Ciphertext(ct_length, 0.5))) #constant value ct with 0.5 for the first value of the expansion 
     print(f'Result: {result}')
     for degree, num, den in TANH_COEFFICIENTS:
         scalar = num / den

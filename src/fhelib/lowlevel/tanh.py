@@ -17,7 +17,6 @@ from fhelib import Ciphertext
 # Tanh Taylor coefficients: (degree, numerator, denominator)
 # Only odd degrees, matching the image formula
 TANH_COEFFICIENTS = [
-    (0, 1, 2),
     (1, 1, 2),
     (3, -1, 6),
     (5, 1, 15),
@@ -26,6 +25,7 @@ TANH_COEFFICIENTS = [
     (11, -691, 155925),
     (13, 10922, 6081075),
     (15, -929569, 1277025750),
+    (17, 3202291, 10854718875),
 ]
 
 
@@ -36,7 +36,11 @@ def tanh_coefficients(ct_length: int) -> list[tuple[int, Ciphertext]]:
     :param ct_length: Length of each output Ciphertext (must be a power of 2).
     :return: List of (degree, Ciphertext) pairs for each term.
     """
+
+    # TODO: add the constant term 0.5 to the first element of the ciphertext
     result = []
+    result.append((0, Ciphertext(ct_length, 0.5)))
+    print(f'Result: {result}')
     for degree, num, den in TANH_COEFFICIENTS:
         scalar = num / den
         ct = Ciphertext(ct_length)
@@ -65,8 +69,9 @@ def tanh(x: Ciphertext, n_terms: int = 9, k: int=1) -> Ciphertext:
 
     # compute each term: c_k * x^degree
     terms = []
-    for degree, c_ct in coeffs:
-        x_pow = x.copy() if degree == 1 else raise_to_power(x, degree)
+    terms.append(coeffs[0])     #append the x^0 term
+    for degree, c_ct in coeffs[1:]:     #skip the first element since you cannot raise to power 0
+        x_pow = raise_to_power(x, degree)
         term = multiply(c_ct, x_pow)
         terms.append(term)
 

@@ -69,7 +69,8 @@ def tanh(x: Ciphertext, n_terms: int = 9, k: int=1) -> Ciphertext:
 
     # compute each term: c_k * x^degree
     terms = []
-    terms.append(coeffs[0])     #append the x^0 term
+    _, constant_ct = coeffs[0]
+    terms.append(constant_ct)   #append the x^0 term
     for degree, c_ct in coeffs[1:]:     #skip the first element since you cannot raise to power 0
         x_pow = raise_to_power(x, degree)
         term = multiply(c_ct, x_pow)

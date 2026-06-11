@@ -1,7 +1,7 @@
 import csv
 import numpy as np
 from fhelib import Ciphertext
-from fhelib.lowlevel.sign import sign_finite_k_scaled
+from fhelib.lowlevel.sign import sign_finite_sigmoid_k_scaled
 
 # 1. Create your sample set (-0.500 to 0.500)
 xs = [i / 1000 for i in range(-500, 500)]
@@ -32,7 +32,7 @@ with open("sigmoid_convergence_results.csv", mode="w", newline="") as file:
             z.set_element(idx, val)
 
         # Run FHE evaluation
-        sigmoid_result = sign_finite_k_scaled(z, k=10.0, power=1, tol=1e-6)
+        sigmoid_result = sign_finite_sigmoid_k_scaled(z, k=10.0, power=1, tol=1e-6)
         
         # 4. Extract the clean, real numeric part
         real_output = np.real(sigmoid_result[0])

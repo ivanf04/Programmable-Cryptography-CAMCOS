@@ -1,6 +1,6 @@
 import numpy as np
 from fhelib.lowlevel.realify import realify
-from fhelib.lowlevel.sigmoid import sigmoid
+from fhelib.lowlevel.sigmoid import sigmoid, sigmoid_finite_terms
 from fhelib.lowlevel.tanh import tanh
 from fhelib import Ciphertext
 from fhelib.primitives import add, multiply
@@ -62,6 +62,31 @@ def sign_sigmoid_geo_recip(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Cipherte
     for _ in range(power - 1):
         result = multiply(result, s)
     return result
+
+
+
+def sign_finite_sigmoid_k_scaled(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Ciphertext:
+    """
+    Assumes values within for geometric series convergence
+
+    sigmoid based approximation for the sign function
+    @param
+        x: Ciphertext
+            Input Ciphertex
+        k: float
+            Sigmoid steepness (larger = sharper transition toward 0).
+        power: int or float
+            Raise sigmoid to this power to sharpen the curve
+        tol: float
+            Values <= tol become 0, else become 1
+    @return
+        out: Ciphertext
+            Output with 1's and 0's
+    """
+    kx = (int(k) * x) if float(k).is_integer() else multiply(x, k)
+    sig_kx = sigmoid_finite_terms(kx)
+
+    return sig_kx
 
 
 """

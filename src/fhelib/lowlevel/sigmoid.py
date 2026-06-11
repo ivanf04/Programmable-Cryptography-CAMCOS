@@ -20,6 +20,78 @@ from fhelib.primitives import add, multiply
 from fhelib.lowlevel.power import raise_to_power
 from fhelib import Ciphertext
 
+# Sigmoid Taylor coefficients: (degree, numerator, denominator)
+# Only odd degrees, matching the image formula
+
+SIGMOID_COEFFICIENTS = [
+    (0, 1, 2),
+    (1, 1, 4),
+    (3, -1, 48),
+    (5, 1, 480),
+    (7, -17, 80640),
+    (9, 31, 1451520),
+    (11, -691, 319334400),
+    (13, 5461, 24908083200),
+    (15, -929569, 41845579776000),
+    (17, 3202291, 1422749712384000),
+]
+
+def sigmoid_coefficients(ct_length: int) -> list[tuple[int, Ciphertext]]:
+    """
+    Broadcast each sigmoid Taylor coefficient into a constant Ciphertext.
+
+    :param ct_length: Length of each output Ciphertext (must be a power of 2).
+    :return: List of (degree, Ciphertext) pairs for each term.
+    """
+    result = []
+    for degree, num, den in SIGMOID_COEFFICIENTS:
+        scalar = num / den
+        ct = Ciphertext(ct_length)
+        ct[:] = scalar
+        result.append((degree, ct))
+    return result
+
+
+def sigmoid_finite_terms(x: Ciphertext, n_terms: int = 9) -> Ciphertext:
+    """
+    Approximate sigmoid(x) using the first n_terms of its Taylor expansion.
+    
+    :param x:       Encrypted input values.
+    :param n_terms: Number of terms to include (max 9, matching the formula).
+    :return:        Ciphertext approximating sigmoid(x) slot-wise.
+    """
+    if n_terms < 1 or n_terms > len(SIGMOID_COEFFICIENTS):
+        raise ValueError(f"n_terms must be between 1 and {len(SIGMOID_COEFFICIENTS)}")
+    
+    coeffs = sigmoid_coefficients(x.size)[:n_terms]
+
+    # compute each term: c_k * x^degree
+    terms = []
+    # 1. Handle a degree 0 term safely 
+    first_degree, first_c_ct = coeffs[0]
+    if first_degree == 0:
+        # x^0 is 1, so the term is just the coefficient itself broadcasted!
+        terms.append(first_c_ct)
+        # Process the remaining terms starting from index 1
+        remaining_coeffs = coeffs[1:]
+    else:
+        # Fallback just in case your coeffs array doesn't start with 0
+        remaining_coeffs = coeffs
+
+    # 2. Loop through the rest of the terms (degrees 1, 3, 5, etc.)
+    for degree, c_ct in remaining_coeffs:
+        x_pow = raise_to_power(x, degree)
+        term = multiply(c_ct, x_pow)
+        terms.append(term)
+        
+    # 3. Sum up all the ciphertexts to get the final approximation
+    # Assuming you have an 'add' function or can use python's sum()
+    result = terms[0]
+    for term in terms[1:]:
+        result = add(result, term) # Replace with your HE addition function
+        
+    return result
+
 
 def exp_neg_coefficients(n: int, ct_length: int) -> list[Ciphertext]:
     """

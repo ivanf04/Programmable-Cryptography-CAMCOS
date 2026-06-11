@@ -1,6 +1,6 @@
 import numpy as np
 from fhelib.lowlevel.realify import realify
-from fhelib.lowlevel.sigmoid import sigmoid , sigmoid_finite_terms
+from fhelib.lowlevel.sigmoid import sigmoid, sigmoid_finite_terms
 from fhelib.lowlevel.tanh import tanh
 from fhelib import Ciphertext
 from fhelib.primitives import add, multiply
@@ -63,6 +63,8 @@ def sign_sigmoid_geo_recip(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Cipherte
         result = multiply(result, s)
     return result
 
+
+
 def sign_finite_sigmoid_k_scaled(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Ciphertext:
     """
     Assumes values within for geometric series convergence
@@ -85,6 +87,7 @@ def sign_finite_sigmoid_k_scaled(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Ci
     sig_kx = sigmoid_finite_terms(kx)
 
     return sig_kx
+
 
 """
 Sign function as described in the "Spring 2026" hackmd

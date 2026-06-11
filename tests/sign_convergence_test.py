@@ -6,7 +6,7 @@ from fhelib.lowlevel.sign import sign_finite_sigmoid_k_scaled
 # 1. Create your sample set (-0.500 to 0.500)
 xs = [i / 1000 for i in range(-500, 500)]
 
-# 2. Open CSV file to write data
+# 2. Open CSV file to write data for sigmoid implemaentation of sign 
 with open("sigmoid_convergence_results.csv", mode="w", newline="") as file:
     writer = csv.writer(file)
 
@@ -33,7 +33,7 @@ with open("sigmoid_convergence_results.csv", mode="w", newline="") as file:
 
         # Run FHE evaluation
         sigmoid_result = sign_finite_sigmoid_k_scaled(
-            z, k=128.0, power=1, tol=1e-6, n_terms=9
+            z, k=1.0, power=1, tol=1e-6, n_terms=9
         )
 
         # 4. Extract the clean, real numeric part

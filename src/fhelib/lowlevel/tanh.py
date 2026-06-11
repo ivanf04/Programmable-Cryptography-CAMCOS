@@ -39,8 +39,7 @@ def tanh_coefficients(ct_length: int) -> list[tuple[int, Ciphertext]]:
 
     
     result = []
-    result.append((0, Ciphertext(ct_length, 0.5))) #constant value ct with 0.5 for the first value of the expansion 
-    print(f'Result: {result}')
+    result.append((0, Ciphertext(ct_length, 0.5))) #constant value ct with 0.5 for the first value of the expansion
     for degree, num, den in TANH_COEFFICIENTS:
         scalar = num / den
         ct = Ciphertext(ct_length)

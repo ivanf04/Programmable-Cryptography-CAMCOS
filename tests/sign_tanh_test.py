@@ -1,53 +1,51 @@
 """
-Test for tanh implementation of the sign function as described in Spring 26 CAMCOS Hackmd.
+Tests the binary sign approximation using tanh:
 
-sign_tanh computes (tanh(kx) + 1) / 2, mapping:
-  x << 0  →  ≈ 0
-  x  = 0  →  = 0.5
-  x >> 0  →  ≈ 1
+  sign_(0,1,a)(x) = (tanh(k * (x - a)) + 1) / 2
 
-NOTE: the 9-term Taylor tanh diverges for |kx| > ~1.5.
-  inputs [-4, -2, 0, 1] with large k will diverge — use small k or small inputs.
+Maps x > a → close to 1, x < a → close to 0.
+
+Sweeps threshold a from -1.5 to 1.5 with x fixed at 0.
+Shows FHE output vs numpy reference and distance from the ideal binary target.
 """
 
 import numpy as np
 from fhelib import Ciphertext
-from fhelib.lowlevel.sign import sign_tanh
+from fhelib.primitives import add, multiply
+from fhelib.lowlevel.tanh import tanh
 
-INPUT_VALUES = [-4, -2, 0, 1]
-EXPECTED = [0, 0, 0.5, 1]
+CT_SIZE = 4
+X_VAL = 0.0
+K = 1
+N_TERMS = 9  # default
 
-# ── build ciphertext ──────────────────────────────────────────────────────────
+x_ct = Ciphertext(CT_SIZE, X_VAL)
 
-a = Ciphertext(len(INPUT_VALUES))
-for i, v in enumerate(INPUT_VALUES):
-    a[i] = v
+thresholds = np.arange(-1.5, 1.6, 0.5)  # -1.5, -1.0, ..., 1.5
 
-# ── test 1: small k so kx stays in convergence range ─────────────────────────
+print("=" * 75)
+print(f"sign_(0,1,a)(x) = (tanh(k*(x-a)) + 1) / 2   k={K}, n_terms={N_TERMS}")
+print(f"Input x = {X_VAL}  |  threshold a sweeps -1.5 → 1.5")
+print("=" * 75)
+print(f"{'a':>6}  {'target':>7}  {'FHE':>10}  {'np ref':>10}  {'|FHE - target|':>15}  {'|ref - target|':>15}")
+print("-" * 75)
 
-print("=" * 55)
-print("sign_tanh test — input: [-4, -2, 0, 1]")
-print("=" * 55)
-print(f"Input:    {INPUT_VALUES}")
-print(f"Expected: {EXPECTED}")
+for a in thresholds:
+    # (tanh(k*(x - a)) + 1) / 2  in FHE
+    x_minus_a = add(x_ct, -float(a))
+    tanh_out = tanh(x_minus_a, n_terms=N_TERMS, k=K)
+    heaviside = multiply(add(tanh_out, 1.0), 0.5)
+
+    fhe_val = float(np.real(heaviside[0]))
+    ref_val = float((np.tanh(K * (X_VAL - a)) + 1) / 2)
+    target = 1.0 if X_VAL > a else 0.0
+
+    fhe_err = abs(fhe_val - target)
+    ref_err = abs(ref_val - target)
+
+    label = "x > a → 1" if target == 1.0 else "x ≤ a → 0"
+    print(f"{a:>6.2f}  {target:>7.1f}  {fhe_val:>10.5f}  {ref_val:>10.5f}  {fhe_err:>15.2e}  {ref_err:>15.2e}  ({label})")
+
 print()
-
-for k in [0.1, 0.3, 1.0]:
-    result = sign_tanh(a, k=k)
-    real_vals = np.round(np.real(np.array(result)), 4)
-    kx_max = k * max(abs(v) for v in INPUT_VALUES)
-    converges = "converges" if kx_max < 1.5 else "may diverge"
-    print(f"  k={k:<4}  max|kx|={kx_max:.2f}  ({converges})")
-    print(f"    output:   {real_vals}")
-    print(f"    expected: {EXPECTED}")
-    print()
-
-# ── test 2: plaintext reference ───────────────────────────────────────────────
-
-print("=" * 55)
-print("Plaintext reference: (tanh(kx) + 1) / 2")
-print("=" * 55)
-x_arr = np.array(INPUT_VALUES, dtype=float)
-for k in [0.1, 0.3, 1.0]:
-    ref = (np.tanh(k * x_arr) + 1) / 2
-    print(f"  k={k:<4}  ref: {np.round(ref, 4)}")
+print("FHE error: distance from ideal binary output (0 or 1)")
+print("ref error: how far numpy tanh is from binary — sets the ceiling on FHE accuracy")

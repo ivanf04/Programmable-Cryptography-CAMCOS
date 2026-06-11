@@ -15,8 +15,8 @@ import numpy as np
 from fhelib import Ciphertext
 from fhelib.lowlevel import tanh
 
-INPUT_VALUES = [0.1, 0.2, 0.3, 0.4]
-EXPECTED = [0.54983, 0.59869, 0.64566, 0.68997]
+INPUT_VALUES = [-0.7, -0.8, -0.9, -1]
+EXPECTED = [0.80218, 0.83202, 0.85816, 0.88088]
 
 # ── build ciphertext ──────────────────────────────────────────────────────────
 
@@ -33,7 +33,7 @@ print(f"Input:    {INPUT_VALUES}")
 print(f"Expected: {EXPECTED}")
 print()
 
-for k in [0.1, 0.3, 1.0]:
+for k in [1, 1.2, 1.5]:
     result = tanh(a, k=k)
     real_vals = np.round(np.real(np.array(result)), 4)
     kx_max = k * max(abs(v) for v in INPUT_VALUES)
@@ -49,6 +49,6 @@ print("=" * 55)
 print("Plaintext reference: (tanh(kx) + 1) / 2")
 print("=" * 55)
 x_arr = np.array(INPUT_VALUES, dtype=float)
-for k in [0.1, 0.3, 1.0]:
+for k in [1, 1.2, 1.5]:
     ref = (np.tanh(k * x_arr) + 1) / 2
     print(f"  k={k:<4}  ref: {np.round(ref, 4)}")

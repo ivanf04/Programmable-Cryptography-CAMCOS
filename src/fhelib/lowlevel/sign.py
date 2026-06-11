@@ -1,9 +1,10 @@
 import numpy as np
 from fhelib.lowlevel.realify import realify
-from fhelib.lowlevel.sigmoid import sigmoid
+from fhelib.lowlevel.sigmoid import sigmoid , sigmoid_finite_terms
 from fhelib.lowlevel.tanh import tanh
 from fhelib import Ciphertext
 from fhelib.primitives import add, multiply
+from fhelib.auxiliary.difference import difference
 from fhelib.auxiliary.reciprocal_univ_guess import (
     reciprocal_newton_universal_guess,
     reciprocal_partial_sums_geometric,
@@ -62,6 +63,28 @@ def sign_sigmoid_geo_recip(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Cipherte
         result = multiply(result, s)
     return result
 
+def sign_finite_sigmoid_k_scaled(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Ciphertext:
+    """
+    Assumes values within for geometric series convergence
+
+    sigmoid based approximation for the sign function
+    @param
+        x: Ciphertext
+            Input Ciphertex
+        k: float
+            Sigmoid steepness (larger = sharper transition toward 0).
+        power: int or float
+            Raise sigmoid to this power to sharpen the curve
+        tol: float
+            Values <= tol become 0, else become 1
+    @return
+        out: Ciphertext
+            Output with 1's and 0's
+    """
+    kx = (int(k) * x) if float(k).is_integer() else multiply(x, k)
+    sig_kx = sigmoid_finite_terms(kx)
+
+    return sig_kx
 
 """
 Sign function as described in the "Spring 2026" hackmd
@@ -106,49 +129,86 @@ def sign_heaviside(x: Ciphertext, a, b, c, power=10) -> Ciphertext:
     return add(a, b_a_half_eqaul)
 
 
-def sign_tanh(x: Ciphertext, k: float = 1, n_terms: int = 9) -> Ciphertext:
-    """
-    Approximates sign(x) using tanh(kx).
-    Convergence requires |x| < π/(2k),
-    k=1:  |x| < π/2    ≈ 1.571
-    k=10: |x| < π/20   ≈ 0.157
+# sign_tanh and sign_heaviside_tanh have been depricated use tanh.py for sign approximation with tanh
 
-    tanh(kx) → +1 for x > 0, -1 for x < 0 as k → ∞.
+# def sign_tanh(x: Ciphertext, k: float = 1, n_terms: int = 9) -> Ciphertext:
+#     """
+#     Approximates sign(x) using tanh(kx).
+#     Convergence requires |x| < π/(2k),
+#     k=1:  |x| < π/2    ≈ 1.571
+#     k=10: |x| < π/20   ≈ 0.157
+
+#     tanh(kx) → +1 for x > 0, -1 for x < 0 as k → ∞.
+
+#     :param x:       Encrypted input values.
+#     :param k:       Steepness — larger k = sharper transition at 0.
+#     :param n_terms: Terms in the tanh Taylor expansion (max 9).
+#     :return:        Ciphertext approximating sign(x) slot-wise.
+#     """
+#     x = realify(x)
+
+#     # scale input by k (int multiply costs no level)
+#     kx = (int(k) * x) if float(k).is_integer() else multiply(x, k)
+#     tanh_kx = tanh(kx, n_terms=n_terms)
+
+#     return tanh_kx
+
+def sign_tanh(x: Ciphertext, a, b, c, k: float, n_terms: int = 9):
+    """
+    FHE legal sign function using tanh
+    sign_a,b,c = a + (b - a) * tanh(k * (x - c))
+
+    tanh(k*(x-c)) approximates sign(x-c) in (-1, 1):
+      x >> c  →  output ≈ b
+      x << c  →  output ≈ 2a - b
+    Larger k sharpens the transition at x = c.
 
     :param x:       Encrypted input values.
-    :param k:       Steepness — larger k = sharper transition at 0.
-    :param n_terms: Terms in the tanh Taylor expansion (max 9).
-    :return:        Ciphertext approximating sign(x) slot-wise.
+    :param a:       Scalar (or array) — base value; output approaches b when x > c.
+    :param b:       Scalar (or array) — target value when x > c.
+    :param c:       Threshold — center of the transition.
+    :param k:       Steepness of tanh; larger k = sharper sign approximation.
+    :param n_terms: Number of Taylor series terms in the tanh approximation.
+    :return:        Ciphertext approximating a + (b - a) * sign(x - c) slot-wise.
     """
-    x = realify(x)
+    # shift input: compute x - c
+    c_ct = Ciphertext(x.size, c)
+    c_ct = difference(x, c_ct)
 
-    # scale input by k (int multiply costs no level)
-    kx = (int(k) * x) if float(k).is_integer() else multiply(x, k)
-    tanh_kx = tanh(kx, n_terms=n_terms)
+    # tanh(k * (x - c)) approximates sign(x - c) in the range (-1, 1)
+    tanh_approx = tanh(c_ct, n_terms, k)
 
-    return tanh_kx
+    # compute b - a
+    b_ct = Ciphertext(x.size, b)
+    a_ct = Ciphertext(x.size, a)
+    a_b = difference(b_ct, a_ct)
 
-
-def sign_heaviside_tanh(x: Ciphertext, k: float = 1, n_terms: int = 9) -> Ciphertext:
-    """
-    Approximates sign(x) using tanh(kx).
-
-    tanh(kx) → +1 for x > 0, 0 for x < 0 as k → ∞.
-    Sign_heaviside, values remapped to {0, 1}.
-
-    :param x:       Encrypted input values.
-    :param k:       Steepness — larger k = sharper transition at 0.
-    :param n_terms: Terms in the tanh Taylor expansion (max 9).
-    :return:        Ciphertext approximating sign(x) slot-wise.
-    """
-    x = realify(x)
-
-    # scale input by k (int multiply costs no level)
-    kx = (int(k) * x) if float(k).is_integer() else multiply(x, k)
-    tanh_kx = tanh(kx, n_terms=n_terms)
-    tanh_kx_plus_one = add(tanh_kx, 1)
-
-    # (tanh(kx) + 1) / 2
-    sign_approx = multiply(tanh_kx_plus_one, 0.5)
-
+    # a + (b - a) * tanh(k * (x - c))
+    sign_approx = add(a, (multiply(a_b, tanh_approx)))
     return sign_approx
+    
+
+
+# def sign_heaviside_tanh(x: Ciphertext, k: float = 1, n_terms: int = 9) -> Ciphertext:
+#     """
+#     Approximates sign(x) using tanh(kx).
+
+#     tanh(kx) → +1 for x > 0, 0 for x < 0 as k → ∞.
+#     Sign_heaviside, values remapped to {0, 1}.
+
+#     :param x:       Encrypted input values.
+#     :param k:       Steepness — larger k = sharper transition at 0.
+#     :param n_terms: Terms in the tanh Taylor expansion (max 9).
+#     :return:        Ciphertext approximating sign(x) slot-wise.
+#     """
+#     x = realify(x)
+
+#     # scale input by k (int multiply costs no level)
+#     kx = (int(k) * x) if float(k).is_integer() else multiply(x, k)
+#     tanh_kx = tanh(kx, n_terms=n_terms)
+#     tanh_kx_plus_one = add(tanh_kx, 1)
+
+#     # (tanh(kx) + 1) / 2
+#     sign_approx = multiply(tanh_kx_plus_one, 0.5)
+
+#     return sign_approx

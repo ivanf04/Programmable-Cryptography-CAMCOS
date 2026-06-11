@@ -4,6 +4,7 @@ from fhelib.lowlevel.sigmoid import sigmoid
 from fhelib.lowlevel.tanh import tanh
 from fhelib import Ciphertext
 from fhelib.primitives import add, multiply
+from fhelib.auxiliary.difference import difference
 from fhelib.auxiliary.reciprocal_univ_guess import (
     reciprocal_newton_universal_guess,
     reciprocal_partial_sums_geometric,
@@ -129,6 +130,41 @@ def sign_heaviside(x: Ciphertext, a, b, c, power=10) -> Ciphertext:
 #     tanh_kx = tanh(kx, n_terms=n_terms)
 
 #     return tanh_kx
+
+def sign_tanh(x: Ciphertext, a, b, c, k: float, n_terms: int = 9):
+    """
+    FHE legal sign function using tanh
+    sign_a,b,c = a + (b - a) * tanh(k * (x - c))
+
+    tanh(k*(x-c)) approximates sign(x-c) in (-1, 1):
+      x >> c  →  output ≈ b
+      x << c  →  output ≈ 2a - b
+    Larger k sharpens the transition at x = c.
+
+    :param x:       Encrypted input values.
+    :param a:       Scalar (or array) — base value; output approaches b when x > c.
+    :param b:       Scalar (or array) — target value when x > c.
+    :param c:       Threshold — center of the transition.
+    :param k:       Steepness of tanh; larger k = sharper sign approximation.
+    :param n_terms: Number of Taylor series terms in the tanh approximation.
+    :return:        Ciphertext approximating a + (b - a) * sign(x - c) slot-wise.
+    """
+    # shift input: compute x - c
+    c_ct = Ciphertext(x.size, c)
+    c_ct = difference(x, c_ct)
+
+    # tanh(k * (x - c)) approximates sign(x - c) in the range (-1, 1)
+    tanh_approx = tanh(c_ct, n_terms, k)
+
+    # compute b - a
+    b_ct = Ciphertext(x.size, b)
+    a_ct = Ciphertext(x.size, a)
+    a_b = difference(b_ct, a_ct)
+
+    # a + (b - a) * tanh(k * (x - c))
+    sign_approx = add(a, (multiply(a_b, tanh_approx)))
+    return sign_approx
+    
 
 
 # def sign_heaviside_tanh(x: Ciphertext, k: float = 1, n_terms: int = 9) -> Ciphertext:

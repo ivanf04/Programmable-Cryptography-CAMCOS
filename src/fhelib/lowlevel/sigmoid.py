@@ -34,7 +34,18 @@ SIGMOID_COEFFICIENTS = [
     (13, 5461, 24908083200),
     (15, -929569, 41845579776000),
     (17, 3202291, 1422749712384000),
+    (19, -221930581, 973160803270656000),
+    (21, 4722116521, 204363768686837760000),
+    (23, -56963745931, 24331309871891742720000),
+    (25, 14717667114151, 62044840173323943936000000),
+    (27, -2093660879252671, 87110955603346817286144000000),
+    (29, 86125672563201181, 35367047974958807818174464000000),
+    (31, -129848163681107301953, 526261673867387060334436024320000000),
+    (33, 868320396104950823611, 34733270475247545982072777605120000000),
+    (35, -209390615747646519456961, 82665183731089159437333210700185600000000),
+    (37, 14129659550745551130667441, 55055012364905380185263918326323609600000000),
 ]
+
 
 def sigmoid_coefficients(ct_length: int) -> list[tuple[int, Ciphertext]]:
     """
@@ -55,19 +66,19 @@ def sigmoid_coefficients(ct_length: int) -> list[tuple[int, Ciphertext]]:
 def sigmoid_finite_terms(x: Ciphertext, n_terms: int = 9) -> Ciphertext:
     """
     Approximate sigmoid(x) using the first n_terms of its Taylor expansion.
-    
+
     :param x:       Encrypted input values.
     :param n_terms: Number of terms to include (max 9, matching the formula).
     :return:        Ciphertext approximating sigmoid(x) slot-wise.
     """
     if n_terms < 1 or n_terms > len(SIGMOID_COEFFICIENTS):
         raise ValueError(f"n_terms must be between 1 and {len(SIGMOID_COEFFICIENTS)}")
-    
+
     coeffs = sigmoid_coefficients(x.size)[:n_terms]
 
     # compute each term: c_k * x^degree
     terms = []
-    # 1. Handle a degree 0 term safely 
+    # 1. Handle a degree 0 term safely
     first_degree, first_c_ct = coeffs[0]
     if first_degree == 0:
         # x^0 is 1, so the term is just the coefficient itself broadcasted!
@@ -83,13 +94,13 @@ def sigmoid_finite_terms(x: Ciphertext, n_terms: int = 9) -> Ciphertext:
         x_pow = raise_to_power(x, degree)
         term = multiply(c_ct, x_pow)
         terms.append(term)
-        
+
     # 3. Sum up all the ciphertexts to get the final approximation
     # Assuming you have an 'add' function or can use python's sum()
     result = terms[0]
     for term in terms[1:]:
-        result = add(result, term) # Replace with your HE addition function
-        
+        result = add(result, term)  # Replace with your HE addition function
+
     return result
 
 

@@ -64,8 +64,9 @@ def sign_sigmoid_geo_recip(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Cipherte
     return result
 
 
-
-def sign_finite_sigmoid_k_scaled(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Ciphertext:
+def sign_finite_sigmoid_k_scaled(
+    x: Ciphertext, k=10.0, power=1, tol=1e-6, n_terms=9
+) -> Ciphertext:
     """
     Assumes values within for geometric series convergence
 
@@ -84,7 +85,7 @@ def sign_finite_sigmoid_k_scaled(x: Ciphertext, k=10.0, power=1, tol=1e-6) -> Ci
             Output with 1's and 0's
     """
     kx = (int(k) * x) if float(k).is_integer() else multiply(x, k)
-    sig_kx = sigmoid_finite_terms(kx)
+    sig_kx = sigmoid_finite_terms(kx, n_terms=n_terms)
 
     return sig_kx
 
@@ -156,6 +157,7 @@ def sign_heaviside(x: Ciphertext, a, b, c, power=10) -> Ciphertext:
 
 #     return tanh_kx
 
+
 def sign_tanh(x: Ciphertext, a, b, c, k: float, n_terms: int = 9):
     """
     FHE legal sign function using tanh
@@ -189,7 +191,6 @@ def sign_tanh(x: Ciphertext, a, b, c, k: float, n_terms: int = 9):
     # a + (b - a) * tanh(k * (x - c))
     sign_approx = add(a, (multiply(a_b, tanh_approx)))
     return sign_approx
-    
 
 
 # def sign_heaviside_tanh(x: Ciphertext, k: float = 1, n_terms: int = 9) -> Ciphertext:

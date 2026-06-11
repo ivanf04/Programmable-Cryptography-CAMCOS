@@ -55,6 +55,7 @@ def tanh(x: Ciphertext, n_terms: int = 9, k: int=1) -> Ciphertext:
 
     :param x:       Encrypted input values.
     :param n_terms: Number of terms to include (max 9, matching the formula).
+    :param k:       Scale x to xk for sharper curve 
     :return:        Ciphertext approximating tanh(x) slot-wise.
     """
     if n_terms < 1 or n_terms > len(TANH_COEFFICIENTS):
@@ -82,3 +83,4 @@ def tanh(x: Ciphertext, n_terms: int = 9, k: int=1) -> Ciphertext:
         result = add(result, terms[i])
 
     return result
+

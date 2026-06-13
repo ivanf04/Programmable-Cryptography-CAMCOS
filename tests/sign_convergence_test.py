@@ -3,8 +3,10 @@ import numpy as np
 from fhelib import Ciphertext
 from fhelib.lowlevel.sign import sign_finite_sigmoid_k_scaled
 
-# 1. Create your sample set (-2.000 to 2.000)
-xs = [i / 1000 for i in range(-2000, 2000)]
+# 1. Create your sample set (-4.000 to 4.000)
+# Range extends past +/-pi so the k=1 convergence window (radius pi/k = pi,
+# turning point near x ~ 2.5) is fully captured, giving a clean window.
+xs = [i / 1000 for i in range(-4000, 4000)]
 
 # 2. Steepness values to sweep
 k_values = [1, 2, 4, 8, 16, 32, 64]
